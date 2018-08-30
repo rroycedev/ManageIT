@@ -39,8 +39,8 @@ Route::get('/thresholdprofiles', 'ThresholdProfileController@index')->name('thre
 Route::get('/thresholdprofiles/add', 'ThresholdProfileController@add')->name('thresholdprofiles/add');
 Route::post('/thresholdprofiles/insert', 'ThresholdProfileController@insert')->name('thresholdprofiles/insert');
 Route::post('/thresholdprofiles/update', 'ThresholdProfileController@update')->name('thresholdprofiles/update');
-Route::get('/thresholdprofiles/change/{servergroupid}', 'ThresholdProfileController@change')->name('thresholdprofiles/change');
-Route::get('/thresholdprofiles/delete/{servergroupid}', 'ThresholdProfileController@delete')->name('thresholdprofiles/delete');
+Route::get('/thresholdprofiles/change/{profileid}', 'ThresholdProfileController@change')->name('thresholdprofiles/change');
+Route::get('/thresholdprofiles/delete/{profileid}', 'ThresholdProfileController@delete')->name('thresholdprofiles/delete');
 Route::post('/thresholdprofiles/remove', 'ThresholdProfileController@remove')->name('thresholdprofiles/remove');
 
 Route::get('/notifications', 'NotificationsController@index')->name('notifications');

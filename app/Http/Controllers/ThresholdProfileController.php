@@ -96,76 +96,87 @@ class ThresholdProfileController extends Controller
      */
     public function change(Request $request)
     {
-        $serverGroupId = $request->route('servergroupid');
+        $profileId = $request->route('profileid');
 
         $validator = Validator::make($request->all(), [
         ]);
 
         try {
-            $serverGroups = DB::table('server_groups')
-                ->select('server_group_id', 'server_group_name', 'description')
-                ->where(array('server_group_id' => $serverGroupId))
+            $profiles = DB::table('threshold_profiles')
+                ->select('*')
+                ->where(array('profile_id' => $profileId))
                 ->get();
 
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups')
+            return redirect('thresholdprofiles')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $serverGroup = $serverGroups[0];
+        $profile = $profiles[0];
 
-        return view('servergroups.change', ["servergroup" => $serverGroup]);
+        return view('thresholdprofiles.change', ["profile" => $profile]);
     }
 
     public function update(Request $request)
     {
+        $params = $request->all();
+
+        if (array_key_exists("cancelbtn", $params)) {
+            return redirect('thresholdprofiles');
+        }
+
         $name = $request->input('name');
         $description = $request->input('description');
+        $type = $request->input('type');
+        $warning = $request->input('warninglevel');
+        $error = $request->input('errorlevel');
 
-        $serverGroupId = $request->input('server_group_id');
+        $profileId = $request->input('profile_id');
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:60',
             'description' => 'required|max:60',
+            'warninglevel' => 'required',
+            'errorlevel' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return redirect('servergroups/change/' . $serverGroupId)
+            return redirect('thresholdprofiles/change/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
         try {
-            $serverGroups = DB::table('server_groups')
-                ->select('server_group_id', 'server_group_name', 'description')
-                ->where(array('server_group_name' => $name))
+            $profiles = DB::table('threshold_profiles')
+                ->select('*')
+                ->where(array('profile_name' => $name))
                 ->get();
 
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups')
+            return redirect('thresholdprofiles/change/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        if (count($serverGroups) > 0) {
-            if ($serverGroups[0]->server_group_id != $serverGroupId) {
+        if (count($profiles) > 0) {
+            if ($profiles[0]->profile_id != $profileId) {
                 $validator->errors()->add('name', 'Server group already exists with that name');
-                return redirect('servergroups/change/' . $serverGroupId)
+                return redirect('thresholdprofiles/change/' . $profileId)
                     ->withErrors($validator)
                     ->withInput();
             }
         }
 
         try {
-            DB::table('server_groups')->where('server_group_id', $serverGroupId)
-                ->update(['server_group_name' => $name, "description" => $description]
+            DB::table('threshold_profiles')->where('profile_id', $profileId)
+                ->update(['profile_name' => $name, "description" => $description, "profile_type" => $type, "warning_level" => $warning, "error_level" => $error]
                 );
-            return redirect('servergroups')->with('message', 'Server group was updated successfully');
+            return redirect('thresholdprofiles')->with('message', 'Threshold profile was updated successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/change/' . $serverGroupId)
+            return redirect('thresholdprofiles/change/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
