@@ -44,47 +44,59 @@ class ThresholdProfileController extends Controller
     }
     public function insert(Request $request)
     {
+        $params = $request->all();
+
+        if (array_key_exists("donebtn", $params)) {
+            return redirect('thresholdprofiles');
+        }
+
         $name = $request->input('name');
         $description = $request->input('description');
+        $type = $request->input('type');
+        $warning = $request->input('warninglevel');
+        $error = $request->input('errorlevel');
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:60',
+            'description' => 'required|max:60',
+            'warninglevel' => 'required',
+            'errorlevel' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return redirect('servergroups/add')
+            return redirect('thresholdprofiles/add')
                 ->withErrors($validator)
                 ->withInput();
         }
 
         try {
-            $serverGroup = DB::table('server_groups')
-                ->select('server_group_id')
-                ->where(array('server_group_name' => $name, "description" => $description))
+            $profiles = DB::table('threshold_profiles')
+                ->select('*')
+                ->where(array('profile_name' => $name))
                 ->get();
 
-            if ($serverGroup && count($serverGroup) > 0) {
-                $validator->errors()->add('name', 'Server group already exists with that name');
-                return redirect('servergroups/add')
+            if (count($profiles) > 0) {
+                $validator->errors()->add('name', 'Profile already exists with that name');
+                return redirect('thresholdprofiles/add')
                     ->withErrors($validator)
                     ->withInput();
             }
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/add')
+            return redirect('thresholdprofiles/add')
                 ->withErrors($validator)
                 ->withInput();
         }
 
         try {
-            DB::table('server_groups')->insert(
-                ['server_group_name' => $name, "description" => $description]
+            DB::table('threshold_profiles')->insert(
+                ['profile_name' => $name, "description" => $description, "profile_type" => $type, "warning_level" => $warning, "error_level" => $error]
 
             );
-            return redirect()->back()->with('message', 'Server group was added successfully');
+            return redirect()->back()->with('message', 'Threshold profile was added successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/add')
+            return redirect('thresholdprofiles/add')
                 ->withErrors($validator)
                 ->withInput();
         }

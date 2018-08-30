@@ -66,8 +66,9 @@
                                 </tr>
                             </table>
                        </div>
-                       <div class="form-group" style="width: 55px;margin:auto;margin-top: 20px;">
-                            <button type="submit" class="btn btn-primary">Add</button>
+                       <div class="form-group" style="width: 145px;margin:auto;margin-top: 20px;">
+                            <button id="addbtn" name="addbtn" type="submit" class="btn btn-primary">Add</button>
+                            <button id="donebtn" name="donebtn" type="submit" class="btn btn-info">Done</button>
                         </div>
                         {{ Form::close() }}
                 </div>
