@@ -200,27 +200,27 @@ class ThresholdProfileController extends Controller
      */
     public function delete(Request $request)
     {
-        $serverGroupId = $request->route('servergroupid');
+        $profileId = $request->route('profileid');
 
         $validator = Validator::make($request->all(), [
         ]);
 
         try {
-            $serverGroups = DB::table('server_groups')
-                ->select('server_group_id', 'server_group_name')
-                ->where(array('server_group_id' => $serverGroupId))
+            $profiles = DB::table('threshold_profiles')
+                ->select('*')
+                ->where(array('profile_id' => $profileId))
                 ->get();
 
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/add')
+            return redirect('thresholdprofiles')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $serverGroup = $serverGroups[0];
+        $profile = $profiles[0];
 
-        return view('servergroups.delete', ["servergroup" => $serverGroup]);
+        return view('thresholdprofiles.delete', ["profile" => $profile]);
     }
 
     public function remove(Request $request)
@@ -228,31 +228,31 @@ class ThresholdProfileController extends Controller
         $params = $request->all();
 
         if (array_key_exists("cancelbtn", $params)) {
-            return redirect('servergroups');
+            return redirect('thresholdprofiles');
         }
 
-        $serverGroupId = $request->input("server_group_id");
+        $profileId = $request->input("profile_id");
 
         $validator = Validator::make($request->all(), [
         ]);
 
         try {
-            DB::table('server_groups')->where('server_group_id', "=", $serverGroupId)
+            DB::table('threshold_profiles')->where('profile_id', "=", $profileId)
                 ->delete();
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/delete/' . $serverGroupId)
+            return redirect('thresholdprofiles/delete/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
 
         try {
-            DB::table('servers')->where('server_group_id', "=", $serverGroupId)
+            DB::table('threshold_profiles')->where('profile_id', "=", $profileId)
                 ->delete();
-            return redirect('servergroups')->with('message', 'Server group was deleted successfully');
+            return redirect('thresholdprofiles')->with('message', 'Threshold profile was deleted successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/delete/' . $serverGroupId)
+            return redirect('thresholdprofiles/delete/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
