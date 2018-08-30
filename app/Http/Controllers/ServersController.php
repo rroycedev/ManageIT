@@ -27,16 +27,11 @@ class ServersController extends Controller
     public function index()
     {
         $servers = DB::table('servers')
-            ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname', 'servers.port', 'server_groups.server_group_name')
+            ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname', 'server_groups.server_group_name')
             ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
             ->orderBy('servers.server_name', 'asc')
             ->get();
 
-        for ($i = 0; $i < count($servers); $i++) {
-            if ($servers[$i]->port == "0") {
-                $servers[$i]->port = "";
-            }
-        }
         return view('servers', ["servers" => $servers]);
     }
 
@@ -57,14 +52,17 @@ class ServersController extends Controller
 
     public function insert(Request $request)
     {
+        $params = $request->all();
+
+        if (array_key_exists("donebtn", $params)) {
+            return redirect('servers');
+        }
+
         $name = $request->input('name');
         $type = $request->input('type');
         $env = $request->input('environment');
         $hostname = $request->input('hostname');
-        $port = $request->input('port');
-        if ($port == "") {
-            $port = "0";
-        }
+        $status = $request->input('status');
 
         $serverGroupId = $request->input('group');
 
@@ -101,11 +99,11 @@ class ServersController extends Controller
         try {
             $server = DB::table('servers')
                 ->select('server_id')
-                ->where(array('hostname' => $hostname, 'port' => $port))
+                ->where(array('hostname' => $hostname))
                 ->get();
 
             if ($server && count($server) > 0) {
-                $validator->errors()->add('name', 'Server already exists with that hostname and port combination');
+                $validator->errors()->add('name', 'Server already exists with that hostname');
                 return redirect('servers/add')
                     ->withErrors($validator)
                     ->withInput();
@@ -119,7 +117,8 @@ class ServersController extends Controller
 
         try {
             DB::table('servers')->insert(
-                ['server_name' => $name, 'server_type' => $type, 'environment' => $env, 'hostname' => $hostname, 'port' => $port, "server_group_id" => $serverGroupId]
+                ['server_name' => $name, 'server_type' => $type, 'environment' => $env, 'hostname' => $hostname, "server_group_id" => $serverGroupId,
+                    "status" => $status]
 
             );
             return redirect()->back()->with('message', 'Server was added successfully');
@@ -149,23 +148,20 @@ class ServersController extends Controller
 
         try {
             $servers = DB::table('servers')
-                ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname', 'servers.port',
-                    'servers.server_group_id', 'server_groups.server_group_name')
+                ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname',
+                    'servers.server_group_id', 'server_groups.server_group_name', 'servers.status')
                 ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
                 ->where(array('servers.server_id' => $serverId))
                 ->get();
 
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servers/add')
+            return redirect('servers')
                 ->withErrors($validator)
                 ->withInput();
         }
 
         $server = $servers[0];
-        if ($server->port == "0") {
-            $server->port = "";
-        }
 
         return view('servers.change', ["server" => $server, "groups" => $groups]);
     }
@@ -177,10 +173,7 @@ class ServersController extends Controller
         $type = $request->input('type');
         $env = $request->input('environment');
         $hostname = $request->input('hostname');
-        $port = $request->input('port');
-        if ($port == "") {
-            $port = "0";
-        }
+        $status = $request->input('status');
         $serverGroupId = $request->input('group');
 
         $validator = Validator::make($request->all(), [
@@ -196,9 +189,10 @@ class ServersController extends Controller
 
         try {
             DB::table('servers')->where('server_id', $serverId)
-                ->update(['server_name' => $name, 'server_type' => $type, 'environment' => $env, 'hostname' => $hostname, 'port' => "$port", "server_group_id" => $serverGroupId]
+                ->update(['server_name' => $name, 'server_type' => $type, 'environment' => $env, 'hostname' => $hostname, "server_group_id" => $serverGroupId,
+                    "status" => $status]
                 );
-            return redirect()->back()->with('message', 'Server was updated successfully');
+            return redirect('servers')->with('message', 'Server was updated successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('servers/change/' . $serverId)
@@ -216,7 +210,7 @@ class ServersController extends Controller
         $serverId = $request->route('serverid');
         try {
             $servers = DB::table('servers')
-                ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname', 'servers.port',
+                ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname',
                     'servers.server_group_id', 'server_groups.server_group_name')
                 ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
                 ->where(array('servers.server_id' => $serverId))

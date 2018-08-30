@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 @if ($errors->any())
     <div class="alert alert-danger" style="width: 80%;margin: auto;" id="alertwindow">
         <div style="float: left;">
@@ -23,34 +24,47 @@
 @endif
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card" style="width: 18rem">
-                <div class="card-header">Add Threshold Profile</div>
 
+            <div class="card" style="width: 444px;">
+                <div class="card-header">Add Threshold Profile</div>
                 <div class="card-body">
                 {{ Form::open(array('url' => 'thresholdprofiles/insert')) }}
-                        <div class="form-group">
+                        <div>
                             <label for="name">Name</label>
-                            <input id="name" name="name" type="text" class="form-control" value="" />
+                            <input id="name" name="name" type="text" class="form-control" style="width: 400px;" value="" />
                        </div>
-                       <div class="form-group">
+                       <div style="margin-top: 20px;">
                             <label for="name">Description</label>
-                            <input id="description" name="description" type="text" class="form-control" value="" />
+                            <input id="description" name="description" type="text" class="form-control" style="width: 400px;" value="" />
                        </div>
-                        <div class="form-group">
+                       <div style="margin: auto;margin-top: 20px;width: 90px;">
                             <label for="type">Type</label>
-                            <select id="type" name="type" class="form-control ">
+                            <select id="type" name="type" class="form-control" style="width: 90px;" onchange="onThresholdProfileTypeChange()">
                                     <option value="CPU">CPU</option>
                                     <option value="Memory">Memory</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="warninglevel">Warning Level</label>
-                            <input id="warninglevel" name="warninglevel" type="text" class="form-control" value="" />
-                       </div>
-                       <div class="form-group">
-                            <label for="errorlevel">Error Level</label>
-                            <input id="errorlevel" name="errorlevel" type="text" class="form-control" value="" />
+                        <div style="margin-top: 20px;">
+                            <table align="center">
+                                <tr>
+                                    <td>
+                                        <label for="warninglevel">Warning Level</label>
+                                        <div>
+                                            <input id="warninglevel" name="warninglevel" type="text" class="form-control" style="width: 80px;float: left;text-align: right;" value="" />
+                                            <label id="warningleveltype" style="float: left;line-height: 36px;"></label>
+                                            <div style="clear: both;"></div>
+                                        </div>
+                                    </td>
+                                    <td style="padding-left: 30px;">
+                                        <label for="warninglevel">Error Level</label>
+                                        <div>
+                                            <input id="errorlevel" name="errorlevel" type="text" class="form-control" style="width: 80px;float: left;text-align: right;" value="" />
+                                            <label id="errorleveltype" style="float: left;line-height: 36px;"></label>
+                                            <div style="clear: both;"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                        </div>
                        <div class="form-group" style="width: 55px;margin:auto;margin-top: 20px;">
                             <button type="submit" class="btn btn-primary">Add</button>
@@ -60,7 +74,7 @@
                 <div class="card-footer">&nbsp;
                 </div>
             </div>
-        </div>
+
     </div>
 </div>
 @endsection

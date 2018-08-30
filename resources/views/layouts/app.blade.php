@@ -90,6 +90,17 @@
                 });
             });
 
+            function onThresholdProfileTypeChange() {
+                if ($('#type').val() == "CPU") {
+                    $('#warningleveltype').text('');
+                    $('#errorleveltype').text('');
+                }
+                else {
+                    $('#warningleveltype').text('%');
+                    $('#errorleveltype').text('%');
+                }
+            }
+
 
         </script>
     </head>

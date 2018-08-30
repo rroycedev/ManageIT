@@ -23,54 +23,67 @@
 @endif
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card" style="width: 18rem">
+
+        <div class="card" style="width: 725px;">
                 <div class="card-header">Add Server</div>
 
                 <div class="card-body">
                 {{ Form::open(array('url' => 'servers/insert')) }}
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input id="name" name="name" type="text" class="form-control" />
-                       </div>
-                       <div class="form-group">
-                            <label for="type">Type</label>
-                            <select id="type" name="type" class="form-control ">
-                                    <option value="Application Server">Application Server</option>
-                                    <option value="Database Server">Database Server</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="environment">Environment</label>
-                            <select id="environment" name="environment" class="form-control ">
-                                    <option value="Development">Development</option>
-                                    <option value="QA">QA</option>
-                                    <option value="Staging">Staging</option>
-                                    <option value="Production">Production</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                                <label for="hostname">Hostname</label>
-                            <input id="hostname" name="hostname" type="text" class="form-control" />
-                         </div>
-                        <div class="form-group">
-                            <label for="port">Port</label>
-                            <input id="port" type="text" class="form-control " />
-                        </div>
-                        <div class="form-group">
-                            <label for="group">Group</label>
-                            <select id="group" name="group" class="form-control ">
-                                <?php
+                <table>
+                            <tr>
+                                <td style="vertical-align: top;">
+                                    <div>
+                                        <label for="name">Name</label>
+                                        <input id="name" name="name" type="text" class="form-control" style="width: 400px;" value="" />
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        <label for="type">Type</label>
+                                        <select id="type" name="type" class="form-control " style="width: 146px;">
+                                                <option value="Application Server">Application Server</option>
+                                                <option value="Database Server">Database Server</option>
+                                        </select>
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        <label for="name">Hostname</label>
+                                        <input id="hostname" name="hostname" type="text" class="form-control" style="width: 400px;" value="" />
+                                    </div>
+                                </td>
+                                <td style="vertical-align: top;padding-left: 100px;">
+                                    <div>
+                                        <label for="group">Group</label>
+                                        <select id="group" name="group" class="form-control ">
+                                            <?php
 foreach ($groups as $group) {
     ?>
-                                    <option value="{{ $group->server_group_id }}">{{ $group->server_group_name }}</option>
-                                <?php
+                                                <option value="{{ $group->server_group_id }}">{{ $group->server_group_name }}</option>
+                                            <?php
 }
 ?>
-                            </select>
-                        </div>
-                        <div class="form-group" style="width: 55px;margin:auto;margin-top: 20px;">
-                            <button type="submit" class="btn btn-primary">Add</button>
+                                        </select>
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        <label for="environment">Environment</label>
+                                        <select id="environment" name="environment" class="form-control ">
+                                                <option value="Development">Development</option>
+                                                <option value="QA">QA</option>
+                                                <option value="Staging">Staging</option>
+                                                <option value="Production">Production</option>
+                                        </select>
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        <label for="status">Status</label>
+                                        <select id="status" name="status" class="form-control ">
+                                                <option value="Not Monitored">Not Monitored</option>
+                                                <option value="Monitored">Monitored</option>
+                                                <option value="Maintenance">Maintenance</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="form-group" style="width: 145px;margin:auto;margin-top: 20px;">
+                            <button id="addbtn" name="addbtn" type="submit" class="btn btn-primary">Add</button>
+                            <button id="donebtn" name="donebtn" type="submit" class="btn btn-info">Done</button>
                         </div>
                         {{ Form::close() }}
                 </div>
@@ -78,6 +91,6 @@ foreach ($groups as $group) {
                 </div>
             </div>
         </div>
-    </div>
+
 </div>
 @endsection

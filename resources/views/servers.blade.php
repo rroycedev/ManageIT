@@ -36,7 +36,6 @@
                                 <th>Type</th>
                                 <th>Environment</th>
                                 <th>Hostname</th>
-                                <th>Port</th>
                                 <th>Server Group</th>
                                 <th>&nbsp;</th>
                                 <th>&nbsp;</th>
@@ -49,7 +48,6 @@
                             <td>{{ $server->server_type }}</td>
                             <td>{{ $server->environment }}</td>
                             <td>{{ $server->hostname }}</td>
-                            <td style="width: 62px;">{{ $server->port }}</td>
                             <td>{{ $server->server_group_name }}</td>
                             <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("servers/change/" . $server->server_id)  }}" >Change</a></td>
                             <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("servers/delete/" . $server->server_id) }}" >Delete</a></td>
