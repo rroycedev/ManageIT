@@ -43,4 +43,12 @@ Route::get('/thresholdprofiles/change/{profileid}', 'ThresholdProfileController@
 Route::get('/thresholdprofiles/delete/{profileid}', 'ThresholdProfileController@delete')->name('thresholdprofiles/delete');
 Route::post('/thresholdprofiles/remove', 'ThresholdProfileController@remove')->name('thresholdprofiles/remove');
 
+Route::get('/dbconnectionprofiles', 'DbConnectionProfileController@index')->name('dbconnectionprofiles');
+Route::get('/dbconnectionprofiles/add', 'DbConnectionProfileController@add')->name('dbconnectionprofiles/add');
+Route::post('/dbconnectionprofiles/insert', 'DbConnectionProfileController@insert')->name('dbconnectionprofiles/insert');
+Route::post('/dbconnectionprofiles/update', 'DbConnectionProfileController@update')->name('dbconnectionprofiles/update');
+Route::get('/dbconnectionprofiles/change/{servergroupid}', 'DbConnectionProfileController@change')->name('dbconnectionprofiles/change');
+Route::get('/dbconnectionprofiles/delete/{servergroupid}', 'DbConnectionProfileController@delete')->name('dbconnectionprofiles/delete');
+Route::post('/dbconnectionprofiles/remove', 'DbConnectionProfileController@remove')->name('dbconnectionprofiles/remove');
+
 Route::get('/notifications', 'NotificationsController@index')->name('notifications');
