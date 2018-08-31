@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\DatabaseConnection;
-use App\ServerGroup;
+use App\models\DatabaseConnection;
+use App\models\ServerGroup;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -72,20 +72,7 @@ class DbConnectionController extends Controller
             return redirect('dbconnections');
         }
 
-        $serverGroupId = $request->input('group');
-        $username = $request->input('username');
-        $password = $request->input('password');
-        $port = $request->input('port');
-        if ($port == "") {
-            $port = "3306";
-        }
-
-        $dbConnection = new DatabaseConnection();
-
-        $dbConnection->server_group_id = $serverGroupId;
-        $dbConnection->username = $username;
-        $dbConnection->password = $password;
-        $dbConnection->port = $port;
+        $dbConnection = $this->requestToModel($request);
 
         $validator = $dbConnection->validate($request, true);
 
@@ -96,7 +83,7 @@ class DbConnectionController extends Controller
         }
 
         try {
-            $profiles = $dbConnection->get($serverGroupId);
+            $profiles = $dbConnection->get($dbConnection->server_group_id);
 
             if (count($profiles) > 0) {
                 $validator->errors()->add('name', 'Profile already exists for that server group');
@@ -116,7 +103,7 @@ class DbConnectionController extends Controller
 
             return redirect()->back()->with('message', 'Database connection profile was added successfully');
         } catch (\Exception $ex) {
-            $validator->errors()->add('insert', str_replace($password, 'XXXX', str_replace($secretKey, 'XXXXX', $ex->getMessage())));
+            $validator->errors()->add('insert', $ex->getMessage());
             return redirect('dbconnections/add')
                 ->withErrors($validator)
                 ->withInput();
@@ -163,6 +150,18 @@ class DbConnectionController extends Controller
         return view('dbconnections.change', ["profile" => $profile, "groups" => $groups]);
     }
 
+    private function requestToModel(Request $request)
+    {
+        $dbConnectionModel = new DatabaseConnection();
+
+        $dbConnectionModel->server_group_id = $request->input('server_group_id');
+        $dbConnectionModel->username = $request->input('username');
+        $dbConnectionModel->password = $request->input('password');
+        $dbConnectionModel->port = $request->input('port');
+
+        return $dbConnectionModel;
+    }
+
     public function update(Request $request)
     {
         $params = $request->all();
@@ -171,12 +170,7 @@ class DbConnectionController extends Controller
             return redirect('dbconnections');
         }
 
-        $dbConnection = new DatabaseConnection();
-
-        $dbConnection->server_group_id = $serverGroupId;
-        $dbConnection->username = $username;
-        $dbConnection->password = $password;
-        $dbConnection->port = $port;
+        $dbConnection = $this->requestToModel($request);
 
         $validator = $dbConnection->validate($request, true);
 
@@ -191,8 +185,8 @@ class DbConnectionController extends Controller
 
             return redirect('dbconnections')->with('message', 'Database connection was updated successfully');
         } catch (\Exception $ex) {
-            $validator->errors()->add('insert', str_replace($password, 'XXXX', str_replace($secretKey, 'XXXXX', $ex->getMessage())));
-            return redirect('dbconnections/change/' . $serverGroupId)
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('dbconnections/change/' . $dbConnection->server_group_id)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -234,7 +228,7 @@ class DbConnectionController extends Controller
             return redirect('dbconnections');
         }
 
-        $profileId = $request->input("server_group_id");
+        $serverGroupId = $request->input("server_group_id");
 
         $validator = Validator::make($request->all(), [
         ]);

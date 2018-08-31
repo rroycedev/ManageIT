@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -25,8 +25,8 @@ class ServerGroup extends Model
 
     public function updateRow()
     {
-        $sql = "update " . $this->table . " set server_group_name = '" . $this->server_group_name . "', description = " . $this->description .
-        " where server_group_id = " . $this->server_group_id;
+        $sql = "update " . $this->table . " set server_group_name = '" . $this->server_group_name . "', description = '" . $this->description .
+        "' where server_group_id = " . $this->server_group_id;
 
         DB::update($sql);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -64,14 +64,14 @@ class Server extends Model
         if (!$serverId) {
             $servers = DB::table($this->table)
                 ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname',
-                    'servers.server_group_id', 'server_groups.server_group_name')
+                    'servers.server_group_id', 'servers.status', 'server_groups.server_group_name')
                 ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
                 ->orderBy('servers.server_name', 'asc')
                 ->get();
         } else {
             $servers = DB::table($this->table)
                 ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname',
-                    'servers.server_group_id', 'server_groups.server_group_name')
+                    'servers.server_group_id', 'servers.status', 'server_groups.server_group_name')
                 ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
                 ->where(array('servers.server_id' => $serverId))
                 ->get();

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\ServerGroup;
+use App\models\ServerGroup;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -135,6 +135,12 @@ class ServerGroupsController extends Controller
 
     public function update(Request $request)
     {
+        $params = $request->all();
+
+        if (array_key_exists("cancelbtn", $params)) {
+            return redirect('servergroups');
+        }
+
         $serverGroupModel = $this->requestToModel($request);
 
         $validator = $serverGroupModel->validate($request);

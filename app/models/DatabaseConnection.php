@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -25,9 +25,14 @@ class DatabaseConnection extends Model
         }
 
         $sql = "insert into " . $this->table . " (server_group_id, username, password, port) values (" . $this->server_group_id . ", '" .
-        $this->username . "', DES_ENCRYPT('" . $this->password . ", '$secretKey'), " . $this->port . ")";
+        $this->username . "', DES_ENCRYPT('" . $this->password . "', '$secretKey'), " . $this->port . ")";
 
-        DB::insert($sql);
+        try {
+            DB::insert($sql);
+        } catch (\Exception $ex) {
+            throw new \Exception(str_replace($this->password, 'XXXX', str_replace($secretKey, 'XXXXX', $ex->getMessage())));
+        }
+
     }
 
     public function updateRow()
@@ -40,9 +45,13 @@ class DatabaseConnection extends Model
             $sql .= ", password = DES_ENCRYPT('" . $this->password . "', '$secretKey')";
         }
 
-        $sql .= " WHERE server_group_id = " . $this->serverGroupId;
+        $sql .= " WHERE server_group_id = " . $this->server_group_id;
 
-        DB::update($sql);
+        try {
+            DB::update($sql);
+        } catch (\Exception $ex) {
+            throw new \Exception(str_replace($this->password, 'XXXX', str_replace($secretKey, 'XXXXX', $ex->getMessage())));
+        }
     }
 
     public function deleteRow($serverGroupId)

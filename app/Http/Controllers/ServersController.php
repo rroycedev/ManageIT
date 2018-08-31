@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Server;
-use App\ServerGroup;
+use App\models\Server;
+use App\models\ServerGroup;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -184,14 +184,10 @@ class ServersController extends Controller
 
         //  Retrieve server info
 
-        try {
-            $servers = DB::table('servers')
-                ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname',
-                    'servers.server_group_id', 'server_groups.server_group_name', 'servers.status')
-                ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
-                ->where(array('servers.server_id' => $serverId))
-                ->get();
+        $serverModel = new Server();
 
+        try {
+            $servers = $serverModel->get($serverId);
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('servers')
@@ -206,6 +202,12 @@ class ServersController extends Controller
 
     public function update(Request $request)
     {
+        $params = $request->all();
+
+        if (array_key_exists("cancelbtn", $params)) {
+            return redirect('servers');
+        }
+
         $serverModel = $this->requestToModel($request);
 
         $validator = $serverModel->validate($request);

@@ -30,9 +30,9 @@
                 <div class="card-header">Change Database Connection</div>
                 <div class="card-body">
                 {{ Form::open(array('url' => 'dbconnections/update')) }}
-                <input type="hidden" id="group" name="group" value="{{ $profile->server_group_id }}" />
+                <input type="hidden" id="server_group_id" name="server_group_id" value="{{ $profile->server_group_id }}" />
                     <div>
-                        <label for="group">Group</label>
+                        <label>Group</label>
                         <input  type="text" class="form-control" style="width: 300px;" value="{{ $profile->server_group_name }}" readonly />
                     </div>
                      <div style="margin-top: 20px;">

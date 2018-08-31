@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\models\ServerThresholdProfile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Validator;
 
 class ServerThresholdProfileController extends Controller
@@ -26,23 +26,32 @@ class ServerThresholdProfileController extends Controller
      */
     public function index()
     {
-        $serverthresholdprofiles = DB::table('threshold_profiles')
-            ->orderBy('profile_name', 'asc')
-            ->get();
+        $serverThresholdProfileModel = new ServerThresholdProfile();
 
-        return view('serverthresholdprofiles', ["profiles" => $serverthresholdprofiles]);
+        try {
+            $profiles = $serverThresholdProfileModel->get();
+        } catch (\Exception $ex) {
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('serverthresholdprofiles')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        return view('serverthresholdprofiles', ["profiles" => $profiles]);
     }
 
-    private function makeValidator(Request $request)
+    private function requestToModel(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:60',
-            'description' => 'required|max:60',
-            'warninglevel' => 'required|numeric',
-            'errorlevel' => 'required|numeric',
-        ]);
+        $serverThresholdProfileModel = new ServerThresholdProfile();
 
-        return $validator;
+        $serverThresholdProfileModel->profile_id = $request->input('profile_id');
+        $serverThresholdProfileModel->profile_name = $request->input('profile_name');
+        $serverThresholdProfileModel->description = $request->input('description');
+        $serverThresholdProfileModel->profile_type = $request->input('profile_type');
+        $serverThresholdProfileModel->warning_level = $request->input('warning_level');
+        $serverThresholdProfileModel->error_level = $request->input('error_level');
+
+        return $serverThresholdProfileModel;
     }
 
     /**
@@ -62,13 +71,9 @@ class ServerThresholdProfileController extends Controller
             return redirect('serverthresholdprofiles');
         }
 
-        $name = $request->input('name');
-        $description = $request->input('description');
-        $type = $request->input('type');
-        $warning = $request->input('warninglevel');
-        $error = $request->input('errorlevel');
+        $serverThresholdProfileModel = $this->requestToModel($request);
 
-        $validator = $this->makeValidator($request);
+        $validator = $serverThresholdProfileModel->validate($request);
 
         if ($validator->fails()) {
             return redirect('serverthresholdprofiles/add')
@@ -77,10 +82,7 @@ class ServerThresholdProfileController extends Controller
         }
 
         try {
-            $profiles = DB::table('threshold_profiles')
-                ->select('*')
-                ->where(array('profile_name' => $name))
-                ->get();
+            $profiles = $serverThresholdProfileModel->getByName($serverThresholdProfileModel->profile_name);
 
             if (count($profiles) > 0) {
                 $validator->errors()->add('name', 'Profile already exists with that name');
@@ -96,11 +98,9 @@ class ServerThresholdProfileController extends Controller
         }
 
         try {
-            DB::table('threshold_profiles')->insert(
-                ['profile_name' => $name, "description" => $description, "profile_type" => $type, "warning_level" => $warning, "error_level" => $error]
+            $serverThresholdProfileModel->insertRow();
 
-            );
-            return redirect()->back()->with('message', 'Threshold profile was added successfully');
+            return redirect()->back()->with('message', 'Server threshold profile was added successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('serverthresholdprofiles/add')
@@ -120,12 +120,10 @@ class ServerThresholdProfileController extends Controller
         $validator = Validator::make($request->all(), [
         ]);
 
-        try {
-            $profiles = DB::table('threshold_profiles')
-                ->select('*')
-                ->where(array('profile_id' => $profileId))
-                ->get();
+        $serverThresholdProfileModel = new ServerThresholdProfile();
 
+        try {
+            $profiles = $serverThresholdProfileModel->get($profileId);
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('serverthresholdprofiles')
@@ -146,51 +144,41 @@ class ServerThresholdProfileController extends Controller
             return redirect('serverthresholdprofiles');
         }
 
-        $name = $request->input('name');
-        $description = $request->input('description');
-        $type = $request->input('type');
-        $warning = $request->input('warninglevel');
-        $error = $request->input('errorlevel');
+        $serverThresholdProfileModel = $this->requestToModel($request);
 
-        $profileId = $request->input('profile_id');
-
-        $validator = $this->makeValidator($request);
+        $validator = $serverThresholdProfileModel->validate($request);
 
         if ($validator->fails()) {
-            return redirect('serverthresholdprofiles/change/' . $profileId)
+            return redirect('serverthresholdprofiles/change/' . $serverThresholdProfileModel->profile_id)
                 ->withErrors($validator)
                 ->withInput();
         }
-        try {
-            $profiles = DB::table('threshold_profiles')
-                ->select('*')
-                ->where(array('profile_name' => $name))
-                ->get();
 
+        try {
+            $profiles = $serverThresholdProfileModel->getByName($serverThresholdProfileModel->profile_name);
+
+            if (count($profiles) > 0) {
+                if ($profiles[0]->profile_id != $serverThresholdProfileModel->profile_id) {
+                    $validator->errors()->add('name', 'Profile already exists with that name');
+                    return redirect('serverthresholdprofiles/add')
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+            }
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('serverthresholdprofiles/change/' . $profileId)
+            return redirect('serverthresholdprofiles/add')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        if (count($profiles) > 0) {
-            if ($profiles[0]->profile_id != $profileId) {
-                $validator->errors()->add('name', 'Server group already exists with that name');
-                return redirect('serverthresholdprofiles/change/' . $profileId)
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-        }
-
         try {
-            DB::table('threshold_profiles')->where('profile_id', $profileId)
-                ->update(['profile_name' => $name, "description" => $description, "profile_type" => $type, "warning_level" => $warning, "error_level" => $error]
-                );
+            $serverThresholdProfileModel->updateRow();
+
             return redirect('serverthresholdprofiles')->with('message', 'Threshold profile was updated successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('serverthresholdprofiles/change/' . $profileId)
+            return redirect('serverthresholdprofiles/change/' . $serverThresholdProfileModel->profile_id)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -207,12 +195,10 @@ class ServerThresholdProfileController extends Controller
         $validator = Validator::make($request->all(), [
         ]);
 
-        try {
-            $profiles = DB::table('threshold_profiles')
-                ->select('*')
-                ->where(array('profile_id' => $profileId))
-                ->get();
+        $serverThresholdProfileModel = new ServerThresholdProfile();
 
+        try {
+            $profiles = $serverThresholdProfileModel->get($profileId);
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('serverthresholdprofiles')
@@ -238,23 +224,15 @@ class ServerThresholdProfileController extends Controller
         $validator = Validator::make($request->all(), [
         ]);
 
-        try {
-            DB::table('threshold_profiles')->where('profile_id', "=", $profileId)
-                ->delete();
-        } catch (\Exception $ex) {
-            $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('serverthresholdprofiles/delete/' . $profileId)
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $serverThresholdProfileModel = new ServerThresholdProfile();
 
         try {
-            DB::table('threshold_profiles')->where('profile_id', "=", $profileId)
-                ->delete();
+            $serverThresholdProfileModel->deleteRow($profileId);
+
             return redirect('serverthresholdprofiles')->with('message', 'Threshold profile was deleted successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('serverthresholdprofiles/delete/' . $profileId)
+            return redirect('serverthresholdprofiles/delete')
                 ->withErrors($validator)
                 ->withInput();
         }

@@ -39,8 +39,9 @@
                             <label for="description">Description</label>
                             <input id="description" name="description" type="text" class="form-control" value="{{ $servergroup->description }}" />
                        </div>
-                        <div class="form-group" style="width: 55px;margin:auto;margin-top: 20px;">
-                            <button type="submit" class="btn btn-primary">Change</button>
+                       <div class="form-group" style="width: 161px;margin:auto;margin-top: 20px;">
+                            <button id="changebtn" name="changebtn" type="submit" class="btn btn-primary">Change</button>
+                            <button id="cancelbtn" name="cancelbtn" type="submit" class="btn btn-info">Cancel</button>
                         </div>
                         {{ Form::close() }}
                 </div>
