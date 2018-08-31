@@ -27,9 +27,9 @@
     <div class="row justify-content-center">
 
             <div class="card" style="width: 444px;">
-                <div class="card-header">Add Database Connection Profile</div>
+                <div class="card-header">Add Database Connection</div>
                 <div class="card-body">
-                {{ Form::open(array('url' => 'dbconnectionprofiles/insert')) }}
+                {{ Form::open(array('url' => 'dbconnections/insert')) }}
                     <div>
                         <label for="group">Group</label>
                         <select id="group" name="group" class="form-control ">

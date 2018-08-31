@@ -16,6 +16,7 @@ class Servers extends Migration
         Schema::table('servers', function (Blueprint $table) {
             $table->enum('status', array('Not Monitored', 'Monitored', 'Maintenance'));
             $table->dropColumn('port');
+            $table->foreign('server_group_id')->references('server_group_id')->on('server_groups')->onDelete('cascade');
         });
     }
 
@@ -28,6 +29,7 @@ class Servers extends Migration
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->integer('port')->unsigned()->after('hostname');
+            $table->dropForeign(['server_group_id']);
         });
     }
 }

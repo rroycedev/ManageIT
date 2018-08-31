@@ -31,14 +31,14 @@
                 <div class="card-body">
                 {{ Form::open(array('url' => 'servergroups/insert')) }}
                         <div class="form-group">
-                            <label for="name">Name</label>
-                            <input id="name" name="name" type="text" class="form-control" value="" />
+                            <label for="server_group_name">Name</label>
+                            <input id="server_group_name" name="server_group_name" type="text" class="form-control" value="" />
                        </div>
                        <div class="form-group">
-                            <label for="name">Description</label>
+                            <label for="description">Description</label>
                             <input id="description" name="description" type="text" class="form-control" value="" />
                        </div>
-                       <div class="form-group" style="width: 145px;margin:auto;margin-top: 20px;">
+                       <div class="form-group" style="width: 124px;margin:auto;margin-top: 20px;">
                             <button id="addbtn" name="addbtn" type="submit" class="btn btn-primary">Add</button>
                             <button id="donebtn" name="donebtn" type="submit" class="btn btn-info">Done</button>
                         </div>

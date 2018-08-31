@@ -170,35 +170,33 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="toggleSidebarMenu('thresholdprofiles')">
-                                <p style="float: left;">Threshold Profiles</p>
-                                <i style="float: right;" id="thresholdprofiles-submenu-caret" class="{{ Route::currentRouteNamed('thresholdprofiles') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
+                            <a class="nav-link" href="#" onclick="toggleSidebarMenu('dbconnections')">
+                                <p style="float: left;">Database Connections</p>
+                                <i style="float: right;" id="dbconnections-submenu-caret" class="{{ Request::is('dbconnections/*') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
                                 <div style="clear: both;"></div>
                             </a>
-                            <ul id="thresholdprofiles-submenu" class="{{ Route::currentRouteNamed('thresholdprofiles') ? 'sub-menu-active' : 'sub-menu' }}">
-                                <li class="{{ Route::currentRouteNamed('thresholdprofiles') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
-                                    <a class="nav-link" href="/thresholdprofiles">
+                            <ul id="dbconnections-submenu" class="{{ Request::is('dbconnections') || Request::is('dbconnections/*') ? 'sub-menu-active' : 'sub-menu' }}">
+                                <li class="{{ Request::is('dbconnections') || Request::is('dbconnections/*') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                                    <a class="nav-link" href="/dbconnections">
                                         <p>Maintain</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="toggleSidebarMenu('dbconnectionprofiles')">
-                                <p style="float: left;">Database Connection Profiles</p>
-                                <i style="float: right;" id="dbconnectionprofiles-submenu-caret" class="{{ Route::currentRouteNamed('dbconnectionprofiles') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
+                            <a class="nav-link" href="#" onclick="toggleSidebarMenu('profiles')">
+                                <p style="float: left;">Threshold Profiles</p>
+                                <i style="float: right;" id="profiles-submenu-caret" class="{{ Route::currentRouteNamed('serverthresholdprofiles') ||  Route::currentRouteNamed('serverthresholdprofiles/*') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
                                 <div style="clear: both;"></div>
                             </a>
-                            <ul id="dbconnectionprofiles-submenu" class="{{ Route::currentRouteNamed('dbconnectionprofiles') || Route::currentRouteNamed('dbconnectionprofiles/add') || Route::currentRouteNamed('dbconnectionprofiles/change') || Route::currentRouteNamed('dbconnectionprofiles/delete') ? 'sub-menu-active' : 'sub-menu' }}">
-                                <li class="{{ Route::currentRouteNamed('dbconnectionprofiles') || Route::currentRouteNamed('dbconnectionprofiles/add') || Route::currentRouteNamed('dbconnectionprofiles/change') || Route::currentRouteNamed('dbconnectionprofiles/delete') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
-                                    <a class="nav-link" href="/dbconnectionprofiles">
-                                        <p>Maintain</p>
+                            <ul id="profiles-submenu" class="{{ Route::currentRouteNamed('serverthresholdprofiles') ||  Route::currentRouteNamed('serverthresholdprofiles/*')  ? 'sub-menu-active' : 'sub-menu' }}">
+                                <li class="{{ Route::currentRouteNamed('serverthresholdprofiles') ||  Route::currentRouteNamed('serverthresholdprofiles/add') || Route::currentRouteNamed('serverthresholdprofiles/change') || Route::currentRouteNamed('thresholdprofiles/delete') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                                    <a class="nav-link" href="/serverthresholdprofiles">
+                                        <p>Server</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-
-
                     </ul>
                 </div>
             </div>

@@ -26,13 +26,13 @@
     <div class="row justify-content-center">
 
             <div class="card" style="width: 1000px;">
-                <div class="card-header">Delete Threshold Profile</div>
+                <div class="card-header">Delete Server Threshold Profile</div>
 
                 <div class="card-body">
-                {{ Form::open(array('url' => 'thresholdprofiles/remove')) }}
+                {{ Form::open(array('url' => 'serverthresholdprofiles/remove')) }}
                     <input type="hidden" id="profile_id" name="profile_id" value="{{ $profile->profile_id }}" />
                         <div class="form-group">
-                            <h6 style="text-align: center;">Are you sure you wish to delete threshold profile "{{$profile->profile_name}}"?</h6>
+                            <h6 style="text-align: center;">Are you sure you wish to delete server threshold profile "{{$profile->profile_name}}"?</h6>
                        </div>
                         <div class="form-group" style="width: 155px;margin:auto;margin-top: 20px;">
                             <button id="cancelbtn" name="cancelbtn" type="submit" class="btn btn-primary">Cancel</button>

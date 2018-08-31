@@ -32,11 +32,11 @@
                 {{ Form::open(array('url' => 'servergroups/update')) }}
                         <input type="hidden" id="server_group_id" name="server_group_id" value="{{ $servergroup->server_group_id }}" />
                         <div class="form-group">
-                            <label for="name">Name</label>
-                            <input id="name" name="name" type="text" class="form-control" value="{{ $servergroup->server_group_name }}" />
+                            <label for="server_group_name">Name</label>
+                            <input id="server_group_name" name="server_group_name" type="text" class="form-control" value="{{ $servergroup->server_group_name }}" />
                        </div>
                        <div class="form-group">
-                            <label for="name">Description</label>
+                            <label for="description">Description</label>
                             <input id="description" name="description" type="text" class="form-control" value="{{ $servergroup->description }}" />
                        </div>
                         <div class="form-group" style="width: 55px;margin:auto;margin-top: 20px;">

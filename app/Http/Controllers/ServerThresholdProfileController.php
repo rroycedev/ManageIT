@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 
-class ThresholdProfileController extends Controller
+class ServerThresholdProfileController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -26,11 +26,11 @@ class ThresholdProfileController extends Controller
      */
     public function index()
     {
-        $thresholdProfiles = DB::table('threshold_profiles')
+        $serverthresholdprofiles = DB::table('threshold_profiles')
             ->orderBy('profile_name', 'asc')
             ->get();
 
-        return view('thresholdprofiles', ["profiles" => $thresholdProfiles]);
+        return view('serverthresholdprofiles', ["profiles" => $serverthresholdprofiles]);
     }
 
     private function makeValidator(Request $request)
@@ -52,14 +52,14 @@ class ThresholdProfileController extends Controller
      */
     public function add()
     {
-        return view('thresholdprofiles.add');
+        return view('serverthresholdprofiles.add');
     }
     public function insert(Request $request)
     {
         $params = $request->all();
 
         if (array_key_exists("donebtn", $params)) {
-            return redirect('thresholdprofiles');
+            return redirect('serverthresholdprofiles');
         }
 
         $name = $request->input('name');
@@ -71,7 +71,7 @@ class ThresholdProfileController extends Controller
         $validator = $this->makeValidator($request);
 
         if ($validator->fails()) {
-            return redirect('thresholdprofiles/add')
+            return redirect('serverthresholdprofiles/add')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -84,13 +84,13 @@ class ThresholdProfileController extends Controller
 
             if (count($profiles) > 0) {
                 $validator->errors()->add('name', 'Profile already exists with that name');
-                return redirect('thresholdprofiles/add')
+                return redirect('serverthresholdprofiles/add')
                     ->withErrors($validator)
                     ->withInput();
             }
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('thresholdprofiles/add')
+            return redirect('serverthresholdprofiles/add')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -103,7 +103,7 @@ class ThresholdProfileController extends Controller
             return redirect()->back()->with('message', 'Threshold profile was added successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('thresholdprofiles/add')
+            return redirect('serverthresholdprofiles/add')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -128,14 +128,14 @@ class ThresholdProfileController extends Controller
 
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('thresholdprofiles')
+            return redirect('serverthresholdprofiles')
                 ->withErrors($validator)
                 ->withInput();
         }
 
         $profile = $profiles[0];
 
-        return view('thresholdprofiles.change', ["profile" => $profile]);
+        return view('serverthresholdprofiles.change', ["profile" => $profile]);
     }
 
     public function update(Request $request)
@@ -143,7 +143,7 @@ class ThresholdProfileController extends Controller
         $params = $request->all();
 
         if (array_key_exists("cancelbtn", $params)) {
-            return redirect('thresholdprofiles');
+            return redirect('serverthresholdprofiles');
         }
 
         $name = $request->input('name');
@@ -157,7 +157,7 @@ class ThresholdProfileController extends Controller
         $validator = $this->makeValidator($request);
 
         if ($validator->fails()) {
-            return redirect('thresholdprofiles/change/' . $profileId)
+            return redirect('serverthresholdprofiles/change/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -169,7 +169,7 @@ class ThresholdProfileController extends Controller
 
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('thresholdprofiles/change/' . $profileId)
+            return redirect('serverthresholdprofiles/change/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -177,7 +177,7 @@ class ThresholdProfileController extends Controller
         if (count($profiles) > 0) {
             if ($profiles[0]->profile_id != $profileId) {
                 $validator->errors()->add('name', 'Server group already exists with that name');
-                return redirect('thresholdprofiles/change/' . $profileId)
+                return redirect('serverthresholdprofiles/change/' . $profileId)
                     ->withErrors($validator)
                     ->withInput();
             }
@@ -187,10 +187,10 @@ class ThresholdProfileController extends Controller
             DB::table('threshold_profiles')->where('profile_id', $profileId)
                 ->update(['profile_name' => $name, "description" => $description, "profile_type" => $type, "warning_level" => $warning, "error_level" => $error]
                 );
-            return redirect('thresholdprofiles')->with('message', 'Threshold profile was updated successfully');
+            return redirect('serverthresholdprofiles')->with('message', 'Threshold profile was updated successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('thresholdprofiles/change/' . $profileId)
+            return redirect('serverthresholdprofiles/change/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -215,14 +215,14 @@ class ThresholdProfileController extends Controller
 
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('thresholdprofiles')
+            return redirect('serverthresholdprofiles')
                 ->withErrors($validator)
                 ->withInput();
         }
 
         $profile = $profiles[0];
 
-        return view('thresholdprofiles.delete', ["profile" => $profile]);
+        return view('serverthresholdprofiles.delete', ["profile" => $profile]);
     }
 
     public function remove(Request $request)
@@ -230,7 +230,7 @@ class ThresholdProfileController extends Controller
         $params = $request->all();
 
         if (array_key_exists("cancelbtn", $params)) {
-            return redirect('thresholdprofiles');
+            return redirect('serverthresholdprofiles');
         }
 
         $profileId = $request->input("profile_id");
@@ -243,7 +243,7 @@ class ThresholdProfileController extends Controller
                 ->delete();
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('thresholdprofiles/delete/' . $profileId)
+            return redirect('serverthresholdprofiles/delete/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -251,10 +251,10 @@ class ThresholdProfileController extends Controller
         try {
             DB::table('threshold_profiles')->where('profile_id', "=", $profileId)
                 ->delete();
-            return redirect('thresholdprofiles')->with('message', 'Threshold profile was deleted successfully');
+            return redirect('serverthresholdprofiles')->with('message', 'Threshold profile was deleted successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('thresholdprofiles/delete/' . $profileId)
+            return redirect('serverthresholdprofiles/delete/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }

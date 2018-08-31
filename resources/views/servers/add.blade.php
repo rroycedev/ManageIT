@@ -34,25 +34,25 @@
                             <tr>
                                 <td style="vertical-align: top;">
                                     <div>
-                                        <label for="name">Name</label>
-                                        <input id="name" name="name" type="text" class="form-control" style="width: 400px;" value="" />
+                                        <label for="server_name">Name</label>
+                                        <input id="server_name" name="server_name" type="text" class="form-control" style="width: 400px;" value="" />
                                     </div>
                                     <div style="margin-top: 20px;">
-                                        <label for="type">Type</label>
-                                        <select id="type" name="type" class="form-control " style="width: 146px;">
+                                        <label for="server_type">Type</label>
+                                        <select id="server_type" name="server_type" class="form-control " style="width: 146px;">
                                                 <option value="Application Server">Application Server</option>
                                                 <option value="Database Server">Database Server</option>
                                         </select>
                                     </div>
                                     <div style="margin-top: 20px;">
-                                        <label for="name">Hostname</label>
+                                        <label for="hostname">Hostname</label>
                                         <input id="hostname" name="hostname" type="text" class="form-control" style="width: 400px;" value="" />
                                     </div>
                                 </td>
                                 <td style="vertical-align: top;padding-left: 100px;">
                                     <div>
-                                        <label for="group">Group</label>
-                                        <select id="group" name="group" class="form-control ">
+                                        <label for="server_group_id">Group</label>
+                                        <select id="server_group_id" name="server_group_id" class="form-control ">
                                             <?php
 foreach ($groups as $group) {
     ?>

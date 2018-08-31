@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\ServerGroup;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Validator;
 
 class ServerGroupsController extends Controller
@@ -25,18 +25,18 @@ class ServerGroupsController extends Controller
      */
     public function index()
     {
+        $serverGroupModel = new ServerGroup();
+
         try {
-            $servergroups = DB::table('server_groups')
-                ->orderBy('server_group_name', 'asc')
-                ->get();
+            $groups = $serverGroupModel->get();
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups')
+            return redirect('servers')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        return view('servergroups', ["servergroups" => $servergroups]);
+        return view('servergroups', ["servergroups" => $groups]);
     }
 
     /**
@@ -49,6 +49,17 @@ class ServerGroupsController extends Controller
         return view('servergroups.add');
     }
 
+    private function requestToModel(Request $request)
+    {
+        $serverGroupModel = new ServerGroup();
+
+        $serverGroupModel->server_group_id = $request->input('server_group_id');
+        $serverGroupModel->server_group_name = $request->input('server_group_name');
+        $serverGroupModel->description = $request->input('description');
+
+        return $serverGroupModel;
+    }
+
     public function insert(Request $request)
     {
         $params = $request->all();
@@ -57,13 +68,9 @@ class ServerGroupsController extends Controller
             return redirect('servergroups');
         }
 
-        $name = $request->input('name');
-        $description = $request->input('description');
+        $serverGroupModel = $this->requestToModel($request);
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:60',
-            'description' => 'required|max:60',
-        ]);
+        $validator = $serverGroupModel->validate($request);
 
         if ($validator->fails()) {
             return redirect('servergroups/add')
@@ -72,12 +79,9 @@ class ServerGroupsController extends Controller
         }
 
         try {
-            $serverGroup = DB::table('server_groups')
-                ->select('server_group_id')
-                ->where(array('server_group_name' => $name, "description" => $description))
-                ->get();
+            $groups = $serverGroupModel->getByName($serverGroupModel->server_group_name);
 
-            if ($serverGroup && count($serverGroup) > 0) {
+            if (count($groups) > 0) {
                 $validator->errors()->add('name', 'Server group already exists with that name');
                 return redirect('servergroups/add')
                     ->withErrors($validator)
@@ -85,16 +89,14 @@ class ServerGroupsController extends Controller
             }
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/add')
+            return redirect('servers')
                 ->withErrors($validator)
                 ->withInput();
         }
 
         try {
-            DB::table('server_groups')->insert(
-                ['server_group_name' => $name, "description" => $description]
+            $serverGroupModel->insertRow();
 
-            );
             return redirect()->back()->with('message', 'Server group was added successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
@@ -115,67 +117,55 @@ class ServerGroupsController extends Controller
         $validator = Validator::make($request->all(), [
         ]);
 
-        try {
-            $serverGroups = DB::table('server_groups')
-                ->select('*')
-                ->where(array('server_group_id' => $serverGroupId))
-                ->get();
+        $serverGroupModel = new ServerGroup();
 
+        try {
+            $groups = $serverGroupModel->get($serverGroupId);
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups')
+            return redirect('servers')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $serverGroup = $serverGroups[0];
+        $serverGroup = $groups[0];
 
         return view('servergroups.change', ["servergroup" => $serverGroup]);
     }
 
     public function update(Request $request)
     {
-        $name = $request->input('name');
-        $description = $request->input('description');
+        $serverGroupModel = $this->requestToModel($request);
 
-        $serverGroupId = $request->input('server_group_id');
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:60',
-            'description' => 'required|max:60',
-        ]);
+        $validator = $serverGroupModel->validate($request);
 
         if ($validator->fails()) {
             return redirect('servergroups/change/' . $serverGroupId)
                 ->withErrors($validator)
                 ->withInput();
         }
-        try {
-            $serverGroups = DB::table('server_groups')
-                ->select('server_group_id', 'server_group_name', 'description')
-                ->where(array('server_group_name' => $name))
-                ->get();
 
+        try {
+            $groups = $serverGroupModel->getByName($serverGroupModel->server_group_name);
+
+            if (count($groups) > 0) {
+                if ($serverGroupModel->server_group_id != $groups[0]->server_group_id) {
+                    $validator->errors()->add('name', 'Server group already exists with that name');
+                    return redirect('servergroups/add')
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+            }
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups')
+            return redirect('servers')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        if (count($serverGroups) > 0) {
-            if ($serverGroups[0]->server_group_id != $serverGroupId) {
-                $validator->errors()->add('name', 'Server group already exists with that name');
-                return redirect('servergroups/change/' . $serverGroupId)
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-        }
-
         try {
-            DB::table('server_groups')->where('server_group_id', $serverGroupId)
-                ->update(['server_group_name' => $name, "description" => $description]
-                );
+            $serverGroupModel->updateRow();
+
             return redirect('servergroups')->with('message', 'Server group was updated successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
@@ -196,20 +186,18 @@ class ServerGroupsController extends Controller
         $validator = Validator::make($request->all(), [
         ]);
 
-        try {
-            $serverGroups = DB::table('server_groups')
-                ->select('server_group_id', 'server_group_name')
-                ->where(array('server_group_id' => $serverGroupId))
-                ->get();
+        $serverGroupModel = new ServerGroup();
 
+        try {
+            $groups = $serverGroupModel->get($serverGroupId);
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups')
+            return redirect('servers')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $serverGroup = $serverGroups[0];
+        $serverGroup = $groups[0];
 
         return view('servergroups.delete', ["servergroup" => $serverGroup]);
     }
@@ -227,19 +215,11 @@ class ServerGroupsController extends Controller
         $validator = Validator::make($request->all(), [
         ]);
 
-        try {
-            DB::table('server_groups')->where('server_group_id', "=", $serverGroupId)
-                ->delete();
-        } catch (\Exception $ex) {
-            $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/delete/' . $serverGroupId)
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $serverGroupModel = new ServerGroup();
 
         try {
-            DB::table('servers')->where('server_group_id', "=", $serverGroupId)
-                ->delete();
+            $serverGroupModel->deleteRow($serverGroupId);
+
             return redirect('servergroups')->with('message', 'Server group was deleted successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());

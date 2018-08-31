@@ -27,9 +27,9 @@
     <div class="row justify-content-center">
 
             <div class="card" style="width: 444px;">
-                <div class="card-header">Change Database Connection Profile</div>
+                <div class="card-header">Change Database Connection</div>
                 <div class="card-body">
-                {{ Form::open(array('url' => 'dbconnectionprofiles/update')) }}
+                {{ Form::open(array('url' => 'dbconnections/update')) }}
                 <input type="hidden" id="group" name="group" value="{{ $profile->server_group_id }}" />
                     <div>
                         <label for="group">Group</label>

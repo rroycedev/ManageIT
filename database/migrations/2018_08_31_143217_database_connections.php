@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DbconnectionProfiles extends Migration
+class DatabaseCconnections extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class DbconnectionProfiles extends Migration
     public function up()
     {
         //
-        Schema::create('dbconnection_profiles', function (Blueprint $table) {
+        Schema::create('database_connections', function (Blueprint $table) {
             $table->collation = 'utf8_general_ci';
             $table->charset = 'utf8';
             $table->integer('server_group_id')->unsigned();
@@ -35,6 +35,6 @@ class DbconnectionProfiles extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dbconnection_profiles');
+        Schema::dropIfExists('database_connections');
     }
 }

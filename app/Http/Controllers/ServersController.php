@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Server;
+use App\ServerGroup;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Validator;
 
 class ServersController extends Controller
@@ -26,12 +27,10 @@ class ServersController extends Controller
      */
     public function index()
     {
+        $serverModel = new Server();
+
         try {
-            $servers = DB::table('servers')
-                ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname', 'server_groups.server_group_name')
-                ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
-                ->orderBy('servers.server_name', 'asc')
-                ->get();
+            $servers = $serverModel->get();
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('servers')
@@ -51,11 +50,10 @@ class ServersController extends Controller
     {
         // Get server groups
 
+        $serverGroupModel = new ServerGroup();
+
         try {
-            $groups = DB::table('server_groups')
-                ->select('server_group_id', 'server_group_name')
-                ->orderBy('server_group_name', 'asc')
-                ->get();
+            $groups = $serverGroupModel->get();
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('servers')
@@ -76,6 +74,21 @@ class ServersController extends Controller
         return view('servers.add', ["groups" => $groups]);
     }
 
+    private function requestToModel(Request $request)
+    {
+        $serverModel = new Server();
+
+        $serverModel->server_id = $request->input('server_id');
+        $serverModel->server_name = $request->input('server_name');
+        $serverModel->server_type = $request->input('server_type');
+        $serverModel->environment = $request->input('environment');
+        $serverModel->hostname = $request->input('hostname');
+        $serverModel->status = $request->input('status');
+        $serverModel->server_group_id = $request->input('server_group_id');
+
+        return $serverModel;
+    }
+
     public function insert(Request $request)
     {
         $params = $request->all();
@@ -84,15 +97,9 @@ class ServersController extends Controller
             return redirect('servers');
         }
 
-        $name = $request->input('name');
-        $type = $request->input('type');
-        $env = $request->input('environment');
-        $hostname = $request->input('hostname');
-        $status = $request->input('status');
+        $serverModel = $this->requestToModel($request);
 
-        $serverGroupId = $request->input('group');
-
-        $validator = $this->makeValidator($request);
+        $validator = $serverModel->validate($request);
 
         if ($validator->fails()) {
             return redirect('servers/add')
@@ -103,13 +110,10 @@ class ServersController extends Controller
         //  Validate unique key 'server_name'
 
         try {
-            $server = DB::table('servers')
-                ->select('server_id')
-                ->where(array('server_name' => $name))
-                ->get();
+            $servers = $serverModel->getByName($serverModel->server_name);
 
-            if ($server && count($server) > 0) {
-                $validator->errors()->add('name', 'Server already exists with that server name');
+            if (count($servers) > 0) {
+                $validator->errors()->add('server_name', 'Server already exists with that server name');
                 return redirect('servers/add')
                     ->withErrors($validator)
                     ->withInput();
@@ -124,13 +128,10 @@ class ServersController extends Controller
         //  Validate unique key 'hostname'
 
         try {
-            $server = DB::table('servers')
-                ->select('server_id')
-                ->where(array('hostname' => $hostname))
-                ->get();
+            $servers = $serverModel->getByHostname($serverModel->hostname);
 
-            if ($server && count($server) > 0) {
-                $validator->errors()->add('name', 'Server already exists with that hostname');
+            if (count($servers) > 0) {
+                $validator->errors()->add('hostname', 'Server already exists with that hostname');
                 return redirect('servers/add')
                     ->withErrors($validator)
                     ->withInput();
@@ -145,11 +146,8 @@ class ServersController extends Controller
         //  Insert server
 
         try {
-            DB::table('servers')->insert(
-                ['server_name' => $name, 'server_type' => $type, 'environment' => $env, 'hostname' => $hostname, "server_group_id" => $serverGroupId,
-                    "status" => $status]
+            $serverModel->insertRow();
 
-            );
             return redirect()->back()->with('message', 'Server was added successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
@@ -168,11 +166,10 @@ class ServersController extends Controller
     {
         // Get server groups
 
+        $serverGroupModel = new ServerGroup();
+
         try {
-            $groups = DB::table('server_groups')
-                ->select('server_group_id', 'server_group_name')
-                ->orderBy('server_group_name', 'asc')
-                ->get();
+            $groups = $serverGroupModel->get();
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('servers')
@@ -207,30 +204,54 @@ class ServersController extends Controller
         return view('servers.change', ["server" => $server, "groups" => $groups]);
     }
 
-    private function makeValidator(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:60',
-            'hostname' => 'required|max:60',
-        ]);
-
-        return $validator;
-    }
-
     public function update(Request $request)
     {
-        $serverId = $request->input("server_id");
-        $name = $request->input('name');
-        $type = $request->input('type');
-        $env = $request->input('environment');
-        $hostname = $request->input('hostname');
-        $status = $request->input('status');
-        $serverGroupId = $request->input('group');
+        $serverModel = $this->requestToModel($request);
 
-        $validator = $this->makeValidator($request);
+        $validator = $serverModel->validate($request);
 
         if ($validator->fails()) {
-            return redirect('servers/change/' . $serverId)
+            return redirect('servers/change/' . $serverModel->server_id)
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        //  Validate unique key 'server_name'
+
+        try {
+            $servers = $serverModel->getByName($serverModel->server_name);
+
+            if (count($servers) > 0) {
+                if ($servers[0]->server_id != $serverModel->server_id) {
+                    $validator->errors()->add('name', 'Server already exists with that server name');
+                    return redirect('servers/add')
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+            }
+        } catch (\Exception $ex) {
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('servers/add')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        //  Validate unique key 'hostname'
+
+        try {
+            $servers = $serverModel->getByHostname($serverModel->hostname);
+
+            if (count($servers) > 0) {
+                if ($servers[0]->server_id != $serverModel->server_id) {
+                    $validator->errors()->add('name', 'Server already exists with that hostname');
+                    return redirect('servers/add')
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+            }
+        } catch (\Exception $ex) {
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('servers/add')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -238,14 +259,12 @@ class ServersController extends Controller
         //  Update server
 
         try {
-            DB::table('servers')->where('server_id', $serverId)
-                ->update(['server_name' => $name, 'server_type' => $type, 'environment' => $env, 'hostname' => $hostname, "server_group_id" => $serverGroupId,
-                    "status" => $status]
-                );
+            $serverModel->updateRow();
+
             return redirect('servers')->with('message', 'Server was updated successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servers/change/' . $serverId)
+            return redirect('servers/change/' . $serverModel->server_id)
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -259,14 +278,19 @@ class ServersController extends Controller
     {
         $serverId = $request->route('serverid');
 
-        try {
-            $servers = DB::table('servers')
-                ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname',
-                    'servers.server_group_id', 'server_groups.server_group_name')
-                ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
-                ->where(array('servers.server_id' => $serverId))
-                ->get();
+        $serverModel = new Server();
 
+        try {
+            $servers = $serverModel->get($serverId);
+        } catch (\Exception $ex) {
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('servers')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+            $servers = $serverModel->get($serverId);
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
             return redirect('servers')
@@ -289,9 +313,11 @@ class ServersController extends Controller
 
         $serverId = $request->input("server_id");
 
+        $serverModel = new Server();
+
         try {
-            DB::table('servers')->where('server_id', "=", $serverId)
-                ->delete();
+            $serverModel->deleteRow($serverId);
+
             return redirect('servers')->with('message', 'Server was deleted successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());

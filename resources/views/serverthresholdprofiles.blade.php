@@ -26,7 +26,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Threshold Profiles</div>
+                <div class="card-header">Server Threshold Profiles</div>
 
                 <div class="card-body">
 
@@ -46,8 +46,8 @@
                             <td>{{ $profile->profile_name }}</td>
                             <td>{{ $profile->description }}</td>
                             <td>{{ $profile->profile_type }}</td>
-                            <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("thresholdprofiles/change/" . $profile->profile_id)  }}" >Change</a></td>
-                            <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("thresholdprofiles/delete/" . $profile->profile_id) }}" >Delete</a></td>
+                            <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("serverthresholdprofiles/change/" . $profile->profile_id)  }}" >Change</a></td>
+                            <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("serverthresholdprofiles/delete/" . $profile->profile_id) }}" >Delete</a></td>
                         </tr>
                         @endforeach
 
@@ -56,7 +56,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <div style="width: 110px;margin: auto;"><a class="btn btn-primary" href="{{ url("thresholdprofiles/add") }}" >Add</a></div>
+                    <div style="width: 110px;margin: auto;"><a class="btn btn-primary" href="{{ url("serverthresholdprofiles/add") }}" >Add</a></div>
                 </div>
             </div>
         </div>

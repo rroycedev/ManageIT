@@ -35,20 +35,20 @@ Route::get('/servergroups/change/{servergroupid}', 'ServerGroupsController@chang
 Route::get('/servergroups/delete/{servergroupid}', 'ServerGroupsController@delete')->name('servergroups/delete');
 Route::post('/servergroups/remove', 'ServerGroupsController@remove')->name('servergroups/remove');
 
-Route::get('/thresholdprofiles', 'ThresholdProfileController@index')->name('thresholdprofiles');
-Route::get('/thresholdprofiles/add', 'ThresholdProfileController@add')->name('thresholdprofiles/add');
-Route::post('/thresholdprofiles/insert', 'ThresholdProfileController@insert')->name('thresholdprofiles/insert');
-Route::post('/thresholdprofiles/update', 'ThresholdProfileController@update')->name('thresholdprofiles/update');
-Route::get('/thresholdprofiles/change/{profileid}', 'ThresholdProfileController@change')->name('thresholdprofiles/change');
-Route::get('/thresholdprofiles/delete/{profileid}', 'ThresholdProfileController@delete')->name('thresholdprofiles/delete');
-Route::post('/thresholdprofiles/remove', 'ThresholdProfileController@remove')->name('thresholdprofiles/remove');
+Route::get('/serverthresholdprofiles', 'ServerThresholdProfileController@index')->name('serverthresholdprofiles');
+Route::get('/serverthresholdprofiles/add', 'ServerThresholdProfileController@add')->name('serverthresholdprofiles/add');
+Route::post('/serverthresholdprofiles/insert', 'ServerThresholdProfileController@insert')->name('serverthresholdprofiles/insert');
+Route::post('/serverthresholdprofiles/update', 'ServerThresholdProfileController@update')->name('serverthresholdprofiles/update');
+Route::get('/serverthresholdprofiles/change/{profileid}', 'ServerThresholdProfileController@change')->name('serverthresholdprofiles/change');
+Route::get('/serverthresholdprofiles/delete/{profileid}', 'ServerThresholdProfileController@delete')->name('serverthresholdprofiles/delete');
+Route::post('/serverthresholdprofiles/remove', 'ServerThresholdProfileController@remove')->name('serverthresholdprofiles/remove');
 
-Route::get('/dbconnectionprofiles', 'DbConnectionProfileController@index')->name('dbconnectionprofiles');
-Route::get('/dbconnectionprofiles/add', 'DbConnectionProfileController@add')->name('dbconnectionprofiles/add');
-Route::post('/dbconnectionprofiles/insert', 'DbConnectionProfileController@insert')->name('dbconnectionprofiles/insert');
-Route::post('/dbconnectionprofiles/update', 'DbConnectionProfileController@update')->name('dbconnectionprofiles/update');
-Route::get('/dbconnectionprofiles/change/{servergroupid}', 'DbConnectionProfileController@change')->name('dbconnectionprofiles/change');
-Route::get('/dbconnectionprofiles/delete/{servergroupid}', 'DbConnectionProfileController@delete')->name('dbconnectionprofiles/delete');
-Route::post('/dbconnectionprofiles/remove', 'DbConnectionProfileController@remove')->name('dbconnectionprofiles/remove');
+Route::get('/dbconnections', 'DbConnectionController@index')->name('dbconnections');
+Route::get('/dbconnections/add', 'DbConnectionController@add')->name('dbconnections/add');
+Route::post('/dbconnections/insert', 'DbConnectionController@insert')->name('dbconnections/insert');
+Route::post('/dbconnections/update', 'DbConnectionController@update')->name('dbconnections/update');
+Route::get('/dbconnections/change/{servergroupid}', 'DbConnectionController@change')->name('dbconnections/change');
+Route::get('/dbconnections/delete/{servergroupid}', 'DbConnectionController@delete')->name('dbconnections/delete');
+Route::post('/dbconnections/remove', 'DbConnectionController@remove')->name('dbconnections/remove');
 
 Route::get('/notifications', 'NotificationsController@index')->name('notifications');

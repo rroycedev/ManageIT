@@ -42,8 +42,8 @@
                         @foreach ($profiles as $profile)
                         <tr>
                             <td style="width: 400px;">{{ $profile->server_group_name }}</td>
-                            <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("dbconnectionprofiles/change/" . $profile->server_group_id)  }}" >Change</a></td>
-                            <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("dbconnectionprofiles/delete/" . $profile->server_group_id) }}" >Delete</a></td>
+                            <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("dbconnections/change/" . $profile->server_group_id)  }}" >Change</a></td>
+                            <td style="width: 80px;"><a class="btn btn-primary" href="{{ url("dbconnections/delete/" . $profile->server_group_id) }}" >Delete</a></td>
                         </tr>
                         @endforeach
 
@@ -52,7 +52,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <div style="width: 110px;margin: auto;"><a class="btn btn-primary" href="{{ url("dbconnectionprofiles/add") }}" >Add</a></div>
+                    <div style="width: 110px;margin: auto;"><a class="btn btn-primary" href="{{ url("dbconnections/add") }}" >Add</a></div>
                 </div>
             </div>
         </div>
