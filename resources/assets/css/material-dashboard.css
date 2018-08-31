@@ -4292,11 +4292,6 @@ tbody.collapse.show {
   list-style: none;
 }
 
-.nav-link {
-  display: block;
-  padding: 0.5rem 1rem;
-}
-
 .nav-link:hover,
 .nav-link:focus {
   text-decoration: none;
@@ -15407,11 +15402,6 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   height: 60px;
 }
 
-.sidebar .nav {
-  margin-top: 20px;
-  display: block;
-}
-
 .sidebar .nav .caret {
   margin-top: 13px;
   position: absolute;
@@ -15422,10 +15412,6 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .sidebar .nav li>a:focus {
   background-color: transparent;
   outline: none;
-}
-
-.sidebar .nav li:first-child>a {
-  margin: 0 15px;
 }
 
 .sidebar .nav li:hover>a,
@@ -15446,10 +15432,6 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   color: #fff;
 }
 
-.sidebar .nav li.separator {
-  margin: 15px 0;
-}
-
 .sidebar .nav li.separator:after {
   width: calc(100% - 30px);
   content: "";
@@ -15461,38 +15443,6 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 
 .sidebar .nav li.separator+li {
   margin-top: 31px;
-}
-
-.sidebar .nav p {
-  margin: 0;
-  line-height: 30px;
-  font-size: 14px;
-  position: relative;
-  display: block;
-  height: auto;
-  white-space: nowrap;
-}
-
-.sidebar .nav i {
-  font-size: 24px;
-  float: left;
-  margin-right: 15px;
-  line-height: 30px;
-  width: 30px;
-  text-align: center;
-  color: #a9afbb;
-}
-
-.sidebar .nav li a,
-.sidebar .nav li .dropdown-menu a {
-  margin: 10px 15px 0;
-  border-radius: 3px;
-  color: #3C4858;
-  padding-left: 10px;
-  padding-right: 10px;
-  text-transform: capitalize;
-  font-size: 13px;
-  padding: 10px 15px;
 }
 
 .sidebar .sidebar-background {

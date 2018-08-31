@@ -29,14 +29,13 @@
         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0,
             user-scalable=0, shrink-to-fit=no' name='viewport' />
         <!--     Fonts and icons     -->
-        <link rel="stylesheet" type="text/css"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"
-            />
-        <link rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-        <!-- CSS Files -->
-        <link href="/css/material-dashboard.css" rel="stylesheet"
-            />
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" rel="stylesheet" type="text/css" />
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet" type="text/css" >
+
+        <!--  Local CSS copied by "gulp" in gulpfile.js -->
+
+        <link href="/css/material-dashboard.css" rel="stylesheet" type="text/css"   />
+        <link href="/css/sidebar-menu.css" rel="stylesheet" type="text/css"   />
 
         <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
         <script>
@@ -101,6 +100,19 @@
                 }
             }
 
+            function toggleSidebarMenu(idPrefix) {
+                if ($('#' + idPrefix + '-submenu').is(":visible")) {
+                    $('#' + idPrefix + '-submenu').hide();
+                    $('#' + idPrefix + '-submenu-caret').removeClass('fa-caret-up');
+                    $('#' + idPrefix + '-submenu-caret').addClass('fa-caret-down');
+                }
+                else {
+                    $('#' + idPrefix + '-submenu').show();
+                    $('#' + idPrefix + '-submenu-caret').removeClass('fa-caret-down');
+                    $('#' + idPrefix + '-submenu-caret').addClass('fa-caret-up');
+
+                }
+            }
 
         </script>
     </head>
@@ -121,27 +133,55 @@
                     <ul class="nav">
                         <li class="{{ Route::currentRouteNamed('home') ? 'nav-item active' : 'nav-item' }}" >
                             <a class="nav-link" href="/">
-                                <i class="material-icons">dashboard</i>
-                                <p>Home: </p>
+                                <p>Home</p>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteNamed('servers') ? 'nav-item active' : 'nav-item' }}">
-                            <a class="nav-link" href="/servers">
-                                <i class="material-icons">computer</i>
-                                <p>Servers</p>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="toggleSidebarMenu('servers')">
+                                <p style="float: left;">Servers</p>
+                                <i style="float: right;" id="servers-submenu-caret" class="{{ Route::currentRouteNamed('servers') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
+                                <div style="clear: both;"></div>
                             </a>
+                            <ul id="servers-submenu" class="{{ Route::currentRouteNamed('servers') ? 'sub-menu-active' : 'sub-menu' }}">
+                                <li class="{{ Route::currentRouteNamed('servers') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                                    <a class="nav-link" href="/servers">
+                                        <p>Maintain</p>
+                                    </a>
+                                </li>
+                                <li class="nav-sub-item" style="list-style: none;">
+                                    <a class="nav-link" href="/servergroups">
+                                        <p>Assign Thresholds</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="{{ Route::currentRouteNamed('servergroups') ? 'nav-item active' : 'nav-item' }}">
-                            <a class="nav-link" href="/servergroups">
-                                <i class="material-icons">collections</i>
-                                <p>Server Groups</p>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="toggleSidebarMenu('servergroups')">
+                                <p style="float: left;">Server Groups</p>
+                                <i style="float: right;" id="servergroups-submenu-caret" class="{{ Route::currentRouteNamed('servergroups') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
+                                <div style="clear: both;"></div>
                             </a>
+                            <ul id="servergroups-submenu" class="{{ Route::currentRouteNamed('servergroups') ? 'sub-menu-active' : 'sub-menu' }}">
+                                <li class="{{ Route::currentRouteNamed('servergroups') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                                    <a class="nav-link" href="/servergroups">
+                                        <p>Maintain</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="{{ Route::currentRouteNamed('thresholdprofiles') ? 'nav-item active' : 'nav-item' }}">
-                            <a class="nav-link" href="/thresholdprofiles">
-                                <i class="fa fa-thermometer-three-quarters" aria-hidden="true"></i>
-                                <p>Threshold Profiles</p>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="toggleSidebarMenu('thresholdprofiles')">
+                                <p style="float: left;">Threshold Profiles</p>
+                                <i style="float: right;" id="thresholdprofiles-submenu-caret" class="{{ Route::currentRouteNamed('thresholdprofiles') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
+                                <div style="clear: both;"></div>
                             </a>
+                            <ul id="thresholdprofiles-submenu" class="{{ Route::currentRouteNamed('thresholdprofiles') ? 'sub-menu-active' : 'sub-menu' }}">
+                                <li class="{{ Route::currentRouteNamed('thresholdprofiles') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                                    <a class="nav-link" href="/thresholdprofiles">
+                                        <p>Maintain</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
 
 

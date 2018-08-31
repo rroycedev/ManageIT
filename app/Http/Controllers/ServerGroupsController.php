@@ -25,12 +25,18 @@ class ServerGroupsController extends Controller
      */
     public function index()
     {
-        $servergroups = DB::table('server_groups')
-            ->orderBy('server_group_name', 'asc')
-            ->get();
+        try {
+            $servergroups = DB::table('server_groups')
+                ->orderBy('server_group_name', 'asc')
+                ->get();
+        } catch (\Exception $ex) {
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('servergroups')
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         return view('servergroups', ["servergroups" => $servergroups]);
-
     }
 
     /**
@@ -40,21 +46,23 @@ class ServerGroupsController extends Controller
      */
     public function add()
     {
-        $groups = DB::table('server_groups')
-            ->select('server_group_id', 'server_group_name')
-            ->orderBy('server_group_name', 'asc')
-            ->get();
-
         return view('servergroups.add');
     }
 
     public function insert(Request $request)
     {
+        $params = $request->all();
+
+        if (array_key_exists("donebtn", $params)) {
+            return redirect('servergroups');
+        }
+
         $name = $request->input('name');
         $description = $request->input('description');
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:60',
+            'description' => 'required|max:60',
         ]);
 
         if ($validator->fails()) {
@@ -109,7 +117,7 @@ class ServerGroupsController extends Controller
 
         try {
             $serverGroups = DB::table('server_groups')
-                ->select('server_group_id', 'server_group_name', 'description')
+                ->select('*')
                 ->where(array('server_group_id' => $serverGroupId))
                 ->get();
 
@@ -196,7 +204,7 @@ class ServerGroupsController extends Controller
 
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servergroups/add')
+            return redirect('servergroups')
                 ->withErrors($validator)
                 ->withInput();
         }

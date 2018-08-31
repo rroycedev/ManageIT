@@ -13,6 +13,7 @@ elixir(function (mix) {
         mix.copy('resources/assets/img/cover.jpg', 'public/images');
         mix.copy('resources/assets/img/apple-icon.png', 'public/images');
         mix.copy('resources/assets/css/material-dashboard.css', 'public/css');
+        mix.copy('resources/assets/css/sidebar-menu.css', 'public/css');
 });
 
 // gulp.task( 'default', [ 'elixir' ] );

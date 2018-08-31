@@ -33,6 +33,18 @@ class ThresholdProfileController extends Controller
         return view('thresholdprofiles', ["profiles" => $thresholdProfiles]);
     }
 
+    private function makeValidator(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:60',
+            'description' => 'required|max:60',
+            'warninglevel' => 'required|numeric',
+            'errorlevel' => 'required|numeric',
+        ]);
+
+        return $validator;
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -56,12 +68,7 @@ class ThresholdProfileController extends Controller
         $warning = $request->input('warninglevel');
         $error = $request->input('errorlevel');
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:60',
-            'description' => 'required|max:60',
-            'warninglevel' => 'required',
-            'errorlevel' => 'required',
-        ]);
+        $validator = $this->makeValidator($request);
 
         if ($validator->fails()) {
             return redirect('thresholdprofiles/add')
@@ -147,12 +154,7 @@ class ThresholdProfileController extends Controller
 
         $profileId = $request->input('profile_id');
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:60',
-            'description' => 'required|max:60',
-            'warninglevel' => 'required',
-            'errorlevel' => 'required',
-        ]);
+        $validator = $this->makeValidator($request);
 
         if ($validator->fails()) {
             return redirect('thresholdprofiles/change/' . $profileId)

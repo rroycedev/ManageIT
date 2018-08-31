@@ -7,7 +7,7 @@
         <div style="float: left;">
           <ul style="margin-top: 0px;margin-bottom: 0px;padding-top: 0px;padding-bottom: 0px;">
                @foreach ($errors->all() as $error)
-                 <li>{{ $error }}</li>
+                 <li style="list-style: none;">{{ $error }}</li>
              @endforeach
             </ul>
         </div>
@@ -15,6 +15,7 @@
         <div style="clear: both;"></div>
     </div>
 @endif
+
 @if(session()->has('message'))
     <div class="alert alert-success" style="width: 80%;margin: auto;" id="alertwindow">
         <div style="float: left;">{{ session()->get('message') }}</div>

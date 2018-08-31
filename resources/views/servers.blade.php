@@ -7,7 +7,7 @@
         <div style="float: left;">
           <ul style="margin-top: 0px;margin-bottom: 0px;padding-top: 0px;padding-bottom: 0px;">
                @foreach ($errors->all() as $error)
-                 <li>{{ $error }}</li>
+                 <li style="list-style: none;">{{ $error }}</li>
              @endforeach
             </ul>
         </div>
