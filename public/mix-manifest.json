@@ -1,7 +1,6 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
-    "/css/material-dashboard.css": "/css/material-dashboard.css",
     "/js/core/bootstrap-material-design.min.js": "/js/core/bootstrap-material-design.min.js",
     "/js/core/jquery.min.js": "/js/core/jquery.min.js",
     "/js/plugins/perfect-scrollbar.jquery.min.js": "/js/plugins/perfect-scrollbar.jquery.min.js",
