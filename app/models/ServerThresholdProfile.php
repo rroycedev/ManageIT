@@ -71,7 +71,7 @@ class ServerThresholdProfile extends Model
 
     public function deleteRow($profileId)
     {
-        DB::table($this->table)->where('profile_id', "=", $profileId)
+        DB::table($this->table)->where('server_threshold_profile_id', "=", $profileId)
             ->delete();
     }
 

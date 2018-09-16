@@ -33,8 +33,10 @@ class ServersController extends Controller
         try {
             $servers = $serverModel->get();
         } catch (\Exception $ex) {
+            $validator = Validator::make([], [
+            ]);
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servers')
+            return redirect('home')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -72,7 +74,19 @@ class ServersController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        return view('servers.add', ["groups" => $groups]);
+
+        $serverThresholdProfileModel = new ServerThresholdProfile();
+
+        try {
+            $profiles = $serverThresholdProfileModel->get();
+        } catch (\Exception $ex) {
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('serverthresholdprofiles')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        return view('servers.add', ["groups" => $groups, "server_threshold_profiles" => $profiles]);
     }
 
     private function requestToModel(Request $request)
@@ -86,6 +100,7 @@ class ServersController extends Controller
         $serverModel->hostname = $request->input('hostname');
         $serverModel->status = $request->input('status');
         $serverModel->server_group_id = $request->input('server_group_id');
+        $serverModel->server_threshold_profile_id = $request->input('server_threshold_profile_id');
 
         return $serverModel;
     }

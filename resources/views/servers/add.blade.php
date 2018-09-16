@@ -48,6 +48,15 @@
                                         <label for="hostname">Hostname</label>
                                         <input id="hostname" name="hostname" type="text" class="form-control" style="width: 400px;" value="" />
                                     </div>
+                                    <div style="margin-top: 20px;">
+                                        <label for="server_threshold_profile_id">Server Threshold Profile</label>
+                                        <select id="server_threshold_profile_id" name="server_threshold_profile_id" class="form-control " style="width: 146px;">
+                                        @foreach ($server_threshold_profiles as $profile)
+                                            <option value="{{ $profile->server_threshold_profile_id }}">{{ $profile->profile_name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+
                                 </td>
                                 <td style="vertical-align: top;padding-left: 100px;">
                                     <div>
@@ -79,6 +88,14 @@ foreach ($groups as $group) {
                                                 <option value="Maintenance">Maintenance</option>
                                         </select>
                                     </div>
+                                    <div style="margin-top: 20px;display: none;">
+                                        <label for="server_type">Database Threshold Profile</label>
+                                        <select id="database_threshold_profile_id" name="database_threshold_profile_id" class="form-control " style="width: 146px;">
+                                                <option value="Application Server">Application Server</option>
+                                                <option value="Database Server">Database Server</option>
+                                        </select>
+                                    </div>
+
                                 </td>
                             </tr>
                         </table>

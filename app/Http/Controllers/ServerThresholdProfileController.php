@@ -273,7 +273,7 @@ class ServerThresholdProfileController extends Controller
             return redirect('serverthresholdprofiles');
         }
 
-        $profileId = $request->input("profile_id");
+        $profileId = $request->input("server_threshold_profile_id");
 
         $validator = Validator::make($request->all(), [
         ]);
@@ -286,7 +286,7 @@ class ServerThresholdProfileController extends Controller
             return redirect('serverthresholdprofiles')->with('message', 'Threshold profile was deleted successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('serverthresholdprofiles/delete')
+            return redirect('serverthresholdprofiles/delete/' . $profileId)
                 ->withErrors($validator)
                 ->withInput();
         }

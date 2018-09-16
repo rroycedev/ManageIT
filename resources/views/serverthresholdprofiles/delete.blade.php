@@ -30,7 +30,7 @@
 
                 <div class="card-body">
                 {{ Form::open(array('url' => 'serverthresholdprofiles/remove')) }}
-                    <input type="hidden" id="profile_id" name="profile_id" value="{{ $profile->profile_id }}" />
+                    <input type="hidden" id="server_threshold_profile_id" name="server_threshold_profile_id" value="{{ $profile->server_threshold_profile_id }}" />
                         <div class="form-group">
                             <h6 style="text-align: center;">Are you sure you wish to delete server threshold profile "{{$profile->profile_name}}"?</h6>
                        </div>
