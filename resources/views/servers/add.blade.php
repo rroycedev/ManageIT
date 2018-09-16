@@ -24,33 +24,33 @@
 @endif
 <div class="container">
     <div class="row justify-content-center">
-
-        <div class="card" style="width: 725px;">
+<div>
+        <div class="card" style="">
                 <div class="card-header">Add Server</div>
 
                 <div class="card-body">
                 {{ Form::open(array('url' => 'servers/insert')) }}
-                <table>
+                <table  style="width: 619px;">
                             <tr>
                                 <td style="vertical-align: top;">
                                     <div>
                                         <label for="server_name">Name</label>
-                                        <input id="server_name" name="server_name" type="text" class="form-control" style="width: 400px;" value="" />
+                                        <input id="server_name" name="server_name" type="text" class="form-control" style="width: 200px;" value="" />
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <label for="server_type">Type</label>
-                                        <select id="server_type" name="server_type" class="form-control " style="width: 146px;">
+                                        <select id="server_type" name="server_type" class="form-control " style="" onchange="serverTypeChanged();return false;">
                                                 <option value="Application Server">Application Server</option>
                                                 <option value="Database Server">Database Server</option>
                                         </select>
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <label for="hostname">Hostname</label>
-                                        <input id="hostname" name="hostname" type="text" class="form-control" style="width: 400px;" value="" />
+                                        <input id="hostname" name="hostname" type="text" class="form-control" style="width: 200px;" value="" />
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <label for="server_threshold_profile_id">Server Threshold Profile</label>
-                                        <select id="server_threshold_profile_id" name="server_threshold_profile_id" class="form-control " style="width: 146px;">
+                                        <select id="server_threshold_profile_id" name="server_threshold_profile_id" class="form-control " style="">
                                         @foreach ($server_threshold_profiles as $profile)
                                             <option value="{{ $profile->server_threshold_profile_id }}">{{ $profile->profile_name }}</option>
                                         @endforeach
@@ -88,11 +88,12 @@ foreach ($groups as $group) {
                                                 <option value="Maintenance">Maintenance</option>
                                         </select>
                                     </div>
-                                    <div style="margin-top: 20px;display: none;">
+                                    <div id="databaes_threshold_profile_div" style="margin-top: 20px;display: none;">
                                         <label for="server_type">Database Threshold Profile</label>
-                                        <select id="database_threshold_profile_id" name="database_threshold_profile_id" class="form-control " style="width: 146px;">
-                                                <option value="Application Server">Application Server</option>
-                                                <option value="Database Server">Database Server</option>
+                                        <select id="database_threshold_profile_id" name="database_threshold_profile_id" class="form-control ">
+                                        @foreach ($database_threshold_profiles as $profile)
+                                            <option value="{{ $profile->database_threshold_profile_id }}">{{ $profile->profile_name }}</option>
+                                        @endforeach
                                         </select>
                                     </div>
 
@@ -109,6 +110,6 @@ foreach ($groups as $group) {
                 </div>
             </div>
         </div>
-
+</div>
 </div>
 @endsection

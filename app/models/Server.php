@@ -18,14 +18,15 @@ class Server extends Model
     public $hostname = "";
     public $server_group_id = "";
     public $server_threshold_profile_id = 0;
+    public $database_threshold_profile_id = 0;
     public $status = "";
 
     public function insertRow()
     {
-        $sql = "insert into " . $this->table . " (server_name, server_type, environment, hostname, server_group_id, status, server_threshold_profile_id) values ('" .
+        $sql = "insert into " . $this->table . " (server_name, server_type, environment, hostname, server_group_id, status, server_threshold_profile_id, database_threshold_profile_id) values ('" .
         $this->server_name . "', '" .
         $this->server_type . "', '" . $this->environment . "', '" . $this->hostname . "', " . $this->server_group_id . ", '" . $this->status . "', " .
-        $this->server_threshold_profile_id . ")";
+        $this->server_threshold_profile_id . ", " . $this->database_threshold_profile_id . ")";
 
         DB::insert($sql);
     }
@@ -34,7 +35,7 @@ class Server extends Model
     {
         $sql = "update " . $this->table . " set server_name = '" . $this->server_name . "', server_type = '" . $this->server_type . "', environment = '" .
         $this->environment . "', hostname = '" . $this->hostname . "', server_group_id = " . $this->server_group_id . ", status = '" . $this->status .
-        "', server_threshold_profile_id = " . $this->server_threshold_profile_id . " where server_id = " .
+        "', server_threshold_profile_id = " . $this->server_threshold_profile_id . ", database_threshold_profile_id = " . $this->database_threshold_profile_id . " where server_id = " .
         $this->server_id;
 
         DB::update($sql);
@@ -68,17 +69,21 @@ class Server extends Model
         if (!$serverId) {
             $servers = DB::table($this->table)
                 ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname',
-                    'servers.server_group_id', 'servers.status', 'server_groups.server_group_name', 'servers.server_threshold_profile_id', 'server_threshold_profiles.profile_name')
+                    'servers.server_group_id', 'servers.status', 'server_groups.server_group_name', 'servers.server_threshold_profile_id', 'server_threshold_profiles.profile_name',
+                    'servers.database_threshold_profile_id', 'database_threshold_profiles.profile_name')
                 ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
                 ->join('server_threshold_profiles', 'servers.server_threshold_profile_id', '=', 'server_threshold_profiles.server_threshold_profile_id')
+                ->join('database_threshold_profiles', 'servers.database_threshold_profile_id', '=', 'database_threshold_profiles.database_threshold_profile_id')
                 ->orderBy('servers.server_name', 'asc')
                 ->get();
         } else {
             $servers = DB::table($this->table)
                 ->select('servers.server_id', 'servers.server_name', 'servers.server_type', 'servers.environment', 'servers.hostname',
-                    'servers.server_group_id', 'servers.status', 'server_groups.server_group_name', 'servers.server_threshold_profile_id', 'server_threshold_profiles.profile_name')
+                    'servers.server_group_id', 'servers.status', 'server_groups.server_group_name', 'servers.server_threshold_profile_id', 'server_threshold_profiles.profile_name',
+                    'servers.database_threshold_profile_id', 'database_threshold_profiles.profile_name')
                 ->join('server_groups', 'servers.server_group_id', '=', 'server_groups.server_group_id')
                 ->join('server_threshold_profiles', 'servers.server_threshold_profile_id', '=', 'server_threshold_profiles.server_threshold_profile_id')
+                ->join('database_threshold_profiles', 'servers.database_threshold_profile_id', '=', 'database_threshold_profiles.database_threshold_profile_id')
                 ->where(array('servers.server_id' => $serverId))
                 ->get();
         }

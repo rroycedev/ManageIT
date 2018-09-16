@@ -89,14 +89,12 @@
                 });
             });
 
-            function onThresholdProfileTypeChange() {
-                if ($('#type').val() == "CPU") {
-                    $('#warningleveltype').text('');
-                    $('#errorleveltype').text('');
+            function serverTypeChanged() {
+                if ($('#server_type').val() == "Application Server") {
+                    $('#databaes_threshold_profile_div').hide();
                 }
                 else {
-                    $('#warningleveltype').text('%');
-                    $('#errorleveltype').text('%');
+                    $('#databaes_threshold_profile_div').show();
                 }
             }
 
@@ -142,15 +140,10 @@
                                 <i style="float: right;" id="servers-submenu-caret" class="{{ Route::currentRouteNamed('servers') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
                                 <div style="clear: both;"></div>
                             </a>
-                            <ul id="servers-submenu" class="{{ Route::currentRouteNamed('servers') || Route::currentRouteNamed('serverthresholdassignment')? 'sub-menu-active' : 'sub-menu' }}">
-                                <li class="{{ Route::currentRouteNamed('servers') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                            <ul id="servers-submenu" class="{{ Request::is('servers') || Request::is('servers/*') ? 'sub-menu-active' : 'sub-menu' }}">
+                                <li class="{{ Request::is('servers') || Request::is('servers/*') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
                                     <a class="nav-link" href="/servers">
                                         <p>Maintain</p>
-                                    </a>
-                                </li>
-                                <li class="{{ Route::currentRouteNamed('serverthresholdassignment') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
-                                    <a class="nav-link" href="/serverthresholdassignment">
-                                        <p>Assign Thresholds</p>
                                     </a>
                                 </li>
                             </ul>
@@ -158,11 +151,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#" onclick="toggleSidebarMenu('servergroups')">
                                 <p style="float: left;">Server Groups</p>
-                                <i style="float: right;" id="servergroups-submenu-caret" class="{{ Route::currentRouteNamed('servergroups') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
+                                <i style="float: right;" id="servergroups-submenu-caret" class="{{ Request::is('servergroups') || Request::is('servergroups/*') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
                                 <div style="clear: both;"></div>
                             </a>
-                            <ul id="servergroups-submenu" class="{{ Route::currentRouteNamed('servergroups') ? 'sub-menu-active' : 'sub-menu' }}">
-                                <li class="{{ Route::currentRouteNamed('servergroups') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                            <ul id="servergroups-submenu" class="{{ Request::is('servergroups') || Request::is('servergroups/*') ? 'sub-menu-active' : 'sub-menu' }}">
+                                <li class="{{ Request::is('servergroups') || Request::is('servergroups/*') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
                                     <a class="nav-link" href="/servergroups">
                                         <p>Maintain</p>
                                     </a>
@@ -186,13 +179,18 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#" onclick="toggleSidebarMenu('profiles')">
                                 <p style="float: left;">Threshold Profiles</p>
-                                <i style="float: right;" id="profiles-submenu-caret" class="{{ Route::currentRouteNamed('serverthresholdprofiles') ||  Route::currentRouteNamed('serverthresholdprofiles/*') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
+                                <i style="float: right;" id="profiles-submenu-caret" class="{{ Request::is('databasethresholdprofiles') || Request::is('databasethresholdprofiles/*') || Request::is('serverthresholdprofiles') || Request::is('serverthresholdprofiles/*') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}"  aria-hidden="true"></i>
                                 <div style="clear: both;"></div>
                             </a>
-                            <ul id="profiles-submenu" class="{{ Route::currentRouteNamed('serverthresholdprofiles') ||  Route::currentRouteNamed('serverthresholdprofiles/*')  ? 'sub-menu-active' : 'sub-menu' }}">
-                                <li class="{{ Route::currentRouteNamed('serverthresholdprofiles') ||  Route::currentRouteNamed('serverthresholdprofiles/add') || Route::currentRouteNamed('serverthresholdprofiles/change') || Route::currentRouteNamed('thresholdprofiles/delete') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                            <ul id="profiles-submenu" class="{{ Route::currentRouteNamed('serverthresholdprofiles') ||  Route::currentRouteNamed('serverthresholdprofiles/*') || Route::currentRouteNamed('databasethresholdprofiles') ||  Route::currentRouteNamed('databasethresholdprofiles/*') ? 'sub-menu-active' : 'sub-menu' }}">
+                                <li class="{{ Request::is('serverthresholdprofiles') || Request::is('serverthresholdprofiles/*') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
                                     <a class="nav-link" href="/serverthresholdprofiles">
                                         <p>Server</p>
+                                    </a>
+                                </li>
+                                <li class="{{ Request::is('databasethresholdprofiles') || Request::is('databasethresholdprofiles/*') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                                    <a class="nav-link" href="/databasethresholdprofiles">
+                                        <p>Database</p>
                                     </a>
                                 </li>
                             </ul>

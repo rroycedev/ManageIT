@@ -25,7 +25,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div>
-            <div class="card" style="width: 654px;">
+            <div class="card" style="">
                 <div class="card-header">Change Server</div>
 
                 <div class="card-body">
@@ -36,18 +36,26 @@
                                 <td style="vertical-align: top;">
                                     <div>
                                         <label for="server_name">Name</label>
-                                        <input id="server_name" name="server_name" type="text" class="form-control" style="width: 400px;" value="{{ $server->server_name }}" />
+                                        <input id="server_name" name="server_name" type="text" class="form-control" style="width: 200px;" value="{{ $server->server_name }}" />
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <label for="server_type">Type</label>
-                                        <select id="server_type" name="server_type" class="form-control " style="width: 146px;">
+                                        <select id="server_type" name="server_type" class="form-control "  onchange="serverTypeChanged();return false;">
                                                 <option value="Application Server"  @if ($server->server_type == "Application Server") selected="selected" @endif>Application Server</option>
                                                 <option value="Database Server"  @if ($server->server_type == "Database Server") selected="selected" @endif>Database Server</option>
                                         </select>
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <label for="hostname">Hostname</label>
-                                        <input id="hostname" name="hostname" type="text" class="form-control" style="width: 400px;" value="{{ $server->hostname }}" />
+                                        <input id="hostname" name="hostname" type="text" class="form-control" style="width: 200px;" value="{{ $server->hostname }}" />
+                                    </div>
+                                    <div style="margin-top: 20px;">
+                                        <label for="server_threshold_profile_id">Server Threshold Profile</label>
+                                        <select id="server_threshold_profile_id" name="server_threshold_profile_id" class="form-control " style="">
+                                        @foreach ($server_threshold_profiles as $profile)
+                                        <option value="{{ $profile->server_threshold_profile_id }}" @if ($server->server_threshold_profile_id == $profile->server_threshold_profile_id) selected="selected" @endif>{{ $profile->profile_name }}</option>
+                                        @endforeach
+                                        </select>
                                     </div>
                                 </td>
                                 <td style="vertical-align: top;padding-left: 100px;">
@@ -80,19 +88,20 @@ foreach ($groups as $group) {
                                                 <option value="Maintenance" @if ($server->status == "Maintenance") selected="selected" @endif>Maintenance</option>
                                         </select>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan=2 style="padding-top: 20px;padding-bottom: 20px;"><label>Profiles:</label>
-                                    <table>
-                                    @foreach ($profiles as $profile)
-                                        <tr>
-                                            <td><input type="checkbox" /></td>
-                                            <td>{{ $profile->profile_name }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </table>
-                                </td>
+                                    @if ( $server->server_type == "Application Server")
+                                    <div id="databaes_threshold_profile_div" style="margin-top: 20px;display: none;">
+                                    @else
+                                    <div id="databaes_threshold_profile_div" style="margin-top: 20px;">
+                                    @endif
+                                        <label for="server_type">Database Threshold Profile</label>
+                                        <select id="database_threshold_profile_id" name="database_threshold_profile_id" class="form-control " style="" >
+                                        @foreach ($database_threshold_profiles as $profile)
+                                            <option value="{{ $profile->database_threshold_profile_id }}" @if ($server->database_threshold_profile_id == $profile->database_threshold_profile_id) selected="selected" @endif>{{ $profile->profile_name }}</option>
+                                        @endforeach
+                                        </select>
+                                    </div>
+                                                               </td>
+
                             </tr>
                         </table>
                         <div class="form-group" style="width: 161px;margin:auto;margin-top: 20px;">

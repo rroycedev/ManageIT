@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\models\DatabaseThresholdProfile;
 use App\models\Server;
 use App\models\ServerGroup;
 use App\models\ServerThresholdProfile;
@@ -81,12 +82,23 @@ class ServersController extends Controller
             $profiles = $serverThresholdProfileModel->get();
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('serverthresholdprofiles')
+            return redirect('servers')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        return view('servers.add', ["groups" => $groups, "server_threshold_profiles" => $profiles]);
+        $databaseThresholdProfileModel = new DatabaseThresholdProfile();
+
+        try {
+            $databaseThresholdProfiles = $databaseThresholdProfileModel->get();
+        } catch (\Exception $ex) {
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('servers')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        return view('servers.add', ["groups" => $groups, "server_threshold_profiles" => $profiles, "database_threshold_profiles" => $databaseThresholdProfiles]);
     }
 
     private function requestToModel(Request $request)
@@ -101,6 +113,7 @@ class ServersController extends Controller
         $serverModel->status = $request->input('status');
         $serverModel->server_group_id = $request->input('server_group_id');
         $serverModel->server_threshold_profile_id = $request->input('server_threshold_profile_id');
+        $serverModel->database_threshold_profile_id = $request->input('database_threshold_profile_id');
 
         return $serverModel;
     }
@@ -199,7 +212,18 @@ class ServersController extends Controller
             $serverThresholdProfiles = $serverThresholdProfileModel->get();
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('servers')
+            return redirect('serverthresholdprofiles')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $databaseThresholdProfileModel = new DatabaseThresholdProfile();
+
+        try {
+            $databaseThresholdProfiles = $databaseThresholdProfileModel->get();
+        } catch (\Exception $ex) {
+            $validator->errors()->add('insert', $ex->getMessage());
+            return redirect('serverthresholdprofiles')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -224,7 +248,8 @@ class ServersController extends Controller
 
         $server = $servers[0];
 
-        return view('servers.change', ["server" => $server, "groups" => $groups, "profiles" => $serverThresholdProfiles]);
+        return view('servers.change', ["server" => $server, "groups" => $groups, "server_threshold_profiles" => $serverThresholdProfiles,
+            "database_threshold_profiles" => $databaseThresholdProfiles]);
     }
 
     public function update(Request $request)
