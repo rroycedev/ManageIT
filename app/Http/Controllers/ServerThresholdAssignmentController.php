@@ -8,7 +8,7 @@ use App\models\ServerThresholdProfile;
 use Illuminate\Http\Request;
 use Validator;
 
-class ServersController extends Controller
+class ServerThresholdAssignmentController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -39,7 +39,7 @@ class ServersController extends Controller
                 ->withInput();
         }
 
-        return view('servers', ["servers" => $servers]);
+        return view('serverthresholdassignment', ["servers" => $servers]);
     }
 
     /**
@@ -47,9 +47,8 @@ class ServersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function add()
+    public function manage()
     {
-        // Get server groups
 
         $serverGroupModel = new ServerGroup();
 
@@ -72,7 +71,7 @@ class ServersController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        return view('servers.add', ["groups" => $groups]);
+        return view('serverthresholdassignment.manage', ["groups" => $groups]);
     }
 
     private function requestToModel(Request $request)

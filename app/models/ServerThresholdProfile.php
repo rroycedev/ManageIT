@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\models\ServerThresholdProfileParam;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,18 +21,52 @@ class ServerThresholdProfile extends Model
 
     public function insertRow()
     {
-        $sql = "insert into " . $this->table . " (profile_name, description, profile_type, warning_level, error_level) values ('" . $this->profile_name . "', '" .
-        $this->description . "', '" . $this->profile_type . "', " . $this->warning_level . ", " . $this->error_level . ")";
+        DB::beginTransaction();
+
+        $sql = "insert into " . $this->table . " (profile_name, description) values ('" . $this->profile_name . "', '" .
+        $this->description . "')";
 
         DB::insert($sql);
+
+        $id = DB::getPdo()->lastInsertId();
+
+        foreach ($this->params as $param) {
+            $paramsModel = new ServerThresholdProfileParam();
+
+            $paramsModel->server_threshold_profile_id = $id;
+            $paramsModel->param_name = $param->param_name;
+            $paramsModel->param_num = $param->param_num;
+            $paramsModel->param_value = $param->param_value;
+            $paramsModel->param_label = $param->param_label;
+
+            $paramsModel->insertRow();
+        }
+
+        DB::commit();
     }
 
     public function updateRow()
     {
+        DB::beginTransaction();
+
         $sql = "update " . $this->table . " set profile_name = '" . $this->profile_name . "', description = '" . $this->description .
-        "', profile_type = '" . $this->profile_type . "', warning_level = " . $this->warning_level . ", error_level = " . $this->error_level . " where profile_id = " . $this->profile_id;
+        "' where server_threshold_profile_id = " . $this->server_threshold_profile_id;
 
         DB::update($sql);
+
+        foreach ($this->params as $param) {
+            $paramsModel = new ServerThresholdProfileParam();
+
+            $paramsModel->server_threshold_profile_param_id = $param->server_threshold_profile_param_id;
+            $paramsModel->server_threshold_profile_id = $param->server_threshold_profile_id;
+            $paramsModel->param_name = $param->param_name;
+            $paramsModel->param_num = $param->param_num;
+            $paramsModel->param_value = $param->param_value;
+
+            $paramsModel->updateRow();
+        }
+
+        DB::commit();
     }
 
     public function deleteRow($profileId)
@@ -52,9 +87,7 @@ class ServerThresholdProfile extends Model
         $rules = [
             'profile_name' => 'required|max:60',
             'description' => 'required|max:60',
-            'profile_type' => 'required',
-            'warning_level' => 'required|numeric',
-            'error_level' => 'required|numeric',
+
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -69,11 +102,24 @@ class ServerThresholdProfile extends Model
                 ->select('*')
                 ->orderBy('profile_name', 'asc')
                 ->get();
+
         } else {
             $profiles = DB::table($this->table)
                 ->select('*')
-                ->where(array('profile_id' => $profileId))
+                ->where(array('server_threshold_profile_id' => $profileId))
                 ->get();
+
+            $paramsModel = new ServerThresholdProfileParam();
+
+            for ($i = 0; $i < count($profiles); $i++) {
+                try {
+                    $params = $paramsModel->get($profileId);
+                } catch (\Exception $ex) {
+                    throw new Exception("Error getting params for profile $profileId");
+                }
+
+                $profiles[$i]->params = $params;
+            }
         }
 
         return $profiles;
@@ -86,6 +132,17 @@ class ServerThresholdProfile extends Model
             ->where(array('profile_name' => $profileName))
             ->get();
 
+        $paramsModel = new ServerThresholdProfileParam();
+
+        for ($i = 0; $i < count($profiles); $i++) {
+            try {
+                $params = $paramsModel->get($profiles[$i]->server_threshold_profile_id);
+            } catch (\Exception $ex) {
+                throw new Exception("Error getting params for profile $profileId");
+            }
+
+            $profiles[$i]->params = $params;
+        }
         return $profiles;
     }
 }

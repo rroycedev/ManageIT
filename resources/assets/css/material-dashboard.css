@@ -9783,6 +9783,108 @@ a.text-dark:focus {
   color: #00bcd4;
 }
 
+/* btn-navpage */
+
+
+.btn.btn-navpage {
+  color: #fff;
+  background-color: #2825f0;
+  border-color: #00bcd4;
+  box-shadow: 0 2px 2px 0 rgba(0, 188, 212, 0.14), 0 3px 1px -2px rgba(0, 188, 212, 0.2), 0 1px 5px 0 rgba(0, 188, 212, 0.12);
+}
+
+.btn.btn-navpage:hover {
+  color: #fff;
+  background-color: #00aec5;
+  border-color: #008697;
+}
+
+.btn.btn-navpage:focus,
+.btn.btn-navpage.focus,
+.btn.btn-navpage:hover {
+  color: #fff;
+  background-color: #00aec5;
+  border-color: #008697;
+}
+
+.btn.btn-navpage:active,
+.btn.btn-navpage.active,
+.open>.btn.btn-navpage.dropdown-toggle,
+.show>.btn.btn-navpage.dropdown-toggle {
+  color: #fff;
+  background-color: #00aec5;
+  border-color: #008697;
+  box-shadow: 0 2px 2px 0 rgba(0, 188, 212, 0.14), 0 3px 1px -2px rgba(0, 188, 212, 0.2), 0 1px 5px 0 rgba(0, 188, 212, 0.12);
+}
+
+.btn.btn-navpage:active:hover,
+.btn.btn-navpage:active:focus,
+.btn.btn-navpage:active.focus,
+.btn.btn-navpage.active:hover,
+.btn.btn-navpage.active:focus,
+.btn.btn-navpage.active.focus,
+.open>.btn.btn-navpage.dropdown-toggle:hover,
+.open>.btn.btn-navpage.dropdown-toggle:focus,
+.open>.btn.btn-navpage.dropdown-toggle.focus,
+.show>.btn.btn-navpage.dropdown-toggle:hover,
+.show>.btn.btn-navpage.dropdown-toggle:focus,
+.show>.btn.btn-navpage.dropdown-toggle.focus {
+  color: #fff;
+  background-color: #00aec5;
+  border-color: #004b55;
+}
+
+.open>.btn.btn-navpage.dropdown-toggle.bmd-btn-icon {
+  color: inherit;
+  background-color: #00bcd4;
+}
+
+.open>.btn.btn-navpage.dropdown-toggle.bmd-btn-icon:hover {
+  background-color: #00aec5;
+}
+
+.btn.btn-navpage.disabled:focus,
+.btn.btn-navpage.disabled.focus,
+.btn.btn-navpage:disabled:focus,
+.btn.btn-navpage:disabled.focus {
+  background-color: #00bcd4;
+  border-color: #00bcd4;
+}
+
+.btn.btn-navpage.disabled:hover,
+.btn.btn-navpage:disabled:hover {
+  background-color: #00bcd4;
+  border-color: #00bcd4;
+}
+
+.btn.btn-navpage:focus,
+.btn.btn-navpage:active,
+.btn.btn-navpage:hover {
+  box-shadow: 0 14px 26px -12px rgba(0, 188, 212, 0.42), 0 4px 23px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 188, 212, 0.2);
+}
+
+.btn.btn-navpage.btn-link {
+  background-color: transparent;
+  color: #00bcd4;
+  box-shadow: none;
+}
+
+.btn.btn-navpage.btn-link:hover,
+.btn.btn-navpage.btn-link:focus,
+.btn.btn-navpage.btn-link:active {
+  background-color: transparent;
+  color: #00bcd4;
+}
+
+
+
+
+
+
+
+
+
+
 .btn.btn-success {
   color: #fff;
   background-color: #4caf50;

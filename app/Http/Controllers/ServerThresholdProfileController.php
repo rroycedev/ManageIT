@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\models\ServerThresholdParamNames;
 use App\models\ServerThresholdProfile;
 use Illuminate\Http\Request;
 use Validator;
@@ -44,12 +45,9 @@ class ServerThresholdProfileController extends Controller
     {
         $serverThresholdProfileModel = new ServerThresholdProfile();
 
-        $serverThresholdProfileModel->profile_id = $request->input('profile_id');
+        $serverThresholdProfileModel->server_threshold_profile_id = $request->input('server_threshold_profile_id');
         $serverThresholdProfileModel->profile_name = $request->input('profile_name');
         $serverThresholdProfileModel->description = $request->input('description');
-        $serverThresholdProfileModel->profile_type = $request->input('profile_type');
-        $serverThresholdProfileModel->warning_level = $request->input('warning_level');
-        $serverThresholdProfileModel->error_level = $request->input('error_level');
 
         return $serverThresholdProfileModel;
     }
@@ -61,10 +59,38 @@ class ServerThresholdProfileController extends Controller
      */
     public function add()
     {
-        return view('serverthresholdprofiles.add');
+        $paramNamesModel = new ServerThresholdParamNames();
+
+        $validator = Validator::make([], [
+        ]);
+
+        try {
+            $paramNames = $paramNamesModel->get();
+
+        } catch (\Exception $ex) {
+            $validator->errors()->add('name', 'Error retrieving parameter names: ' . $ex->getMessage());
+            return redirect('serverthresholdprofiles')
+                ->withErrors($validator)
+                ->withInput();
+        }
+        return view('serverthresholdprofiles.add', ["param_names" => $paramNames]);
     }
     public function insert(Request $request)
     {
+        $paramNamesModel = new ServerThresholdParamNames();
+
+        $validator = Validator::make([], [
+        ]);
+
+        try {
+            $paramNames = $paramNamesModel->get();
+
+        } catch (\Exception $ex) {
+            $validator->errors()->add('name', 'Error retrieving parameter names: ' . $ex->getMessage());
+            return redirect('serverthresholdprofiles')
+                ->withErrors($validator)
+                ->withInput();
+        }
         $params = $request->all();
 
         if (array_key_exists("donebtn", $params)) {
@@ -97,6 +123,24 @@ class ServerThresholdProfileController extends Controller
                 ->withInput();
         }
 
+        $params = array();
+
+        for ($i = 0; $i < count($paramNames); $i++) {
+            $varname = "param_value_" . $paramNames[$i]->param_num;
+            $paramValue = $request->input($varname);
+
+            $param = (object) [];
+
+            $param->param_name = $paramNames[$i]->param_name;
+            $param->param_value = $paramValue;
+            $param->param_label = $paramNames[$i]->param_label;
+            $param->param_num = $paramNames[$i]->param_num;
+
+            $params[] = $param;
+        };
+
+        $serverThresholdProfileModel->params = $params;
+
         try {
             $serverThresholdProfileModel->insertRow();
 
@@ -125,7 +169,7 @@ class ServerThresholdProfileController extends Controller
         try {
             $profiles = $serverThresholdProfileModel->get($profileId);
         } catch (\Exception $ex) {
-            $validator->errors()->add('insert', $ex->getMessage());
+            $validator->errors()->add('insert', "Error getting profile id $profileId : " . $ex->getMessage());
             return redirect('serverthresholdprofiles')
                 ->withErrors($validator)
                 ->withInput();
@@ -149,28 +193,38 @@ class ServerThresholdProfileController extends Controller
         $validator = $serverThresholdProfileModel->validate($request);
 
         if ($validator->fails()) {
-            return redirect('serverthresholdprofiles/change/' . $serverThresholdProfileModel->profile_id)
+            return redirect('serverthresholdprofiles/change/' . $serverThresholdProfileModel->server_threshold_profile_id)
                 ->withErrors($validator)
                 ->withInput();
         }
-
         try {
             $profiles = $serverThresholdProfileModel->getByName($serverThresholdProfileModel->profile_name);
 
             if (count($profiles) > 0) {
-                if ($profiles[0]->profile_id != $serverThresholdProfileModel->profile_id) {
+                if ($profiles[0]->server_threshold_profile_id != $serverThresholdProfileModel->server_threshold_profile_id) {
                     $validator->errors()->add('name', 'Profile already exists with that name');
-                    return redirect('serverthresholdprofiles/add')
+                    return redirect('serverthresholdprofiles/change/' . $serverThresholdProfileModel->server_threshold_profile_id)
                         ->withErrors($validator)
                         ->withInput();
                 }
+
+                for ($i = 0; $i < count($profiles[0]->params); $i++) {
+                    $varname = "param_value_" . $profiles[0]->params[$i]->server_threshold_profile_param_id;
+                    $paramValue = $request->input($varname);
+
+                    $profiles[0]->params[$i]->param_value = $paramValue;
+                };
+
+                $serverThresholdProfileModel->params = $profiles[0]->params;
             }
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('serverthresholdprofiles/add')
+            return redirect('serverthresholdprofiles/change/' . $serverThresholdProfileModel->server_threshold_profile_id)
                 ->withErrors($validator)
                 ->withInput();
         }
+
+        print_r($profiles[0]);
 
         try {
             $serverThresholdProfileModel->updateRow();
@@ -178,7 +232,7 @@ class ServerThresholdProfileController extends Controller
             return redirect('serverthresholdprofiles')->with('message', 'Threshold profile was updated successfully');
         } catch (\Exception $ex) {
             $validator->errors()->add('insert', $ex->getMessage());
-            return redirect('serverthresholdprofiles/change/' . $serverThresholdProfileModel->profile_id)
+            return redirect('serverthresholdprofiles/change/' . $serverThresholdProfileModel->server_threshold_profile_id)
                 ->withErrors($validator)
                 ->withInput();
         }

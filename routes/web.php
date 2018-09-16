@@ -43,6 +43,9 @@ Route::get('/serverthresholdprofiles/change/{profileid}', 'ServerThresholdProfil
 Route::get('/serverthresholdprofiles/delete/{profileid}', 'ServerThresholdProfileController@delete')->name('serverthresholdprofiles/delete');
 Route::post('/serverthresholdprofiles/remove', 'ServerThresholdProfileController@remove')->name('serverthresholdprofiles/remove');
 
+Route::get('/serverthresholdassignment', 'ServerThresholdAssignmentController@index')->name('serverthresholdassignment');
+Route::get('/serverthresholdassignment/manage/{serverid}', 'ServerThresholdAssignmentController@manage')->name('serverthresholdassignment/manage');
+
 Route::get('/dbconnections', 'DbConnectionController@index')->name('dbconnections');
 Route::get('/dbconnections/add', 'DbConnectionController@add')->name('dbconnections/add');
 Route::post('/dbconnections/insert', 'DbConnectionController@insert')->name('dbconnections/insert');

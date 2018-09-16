@@ -34,7 +34,7 @@
 
         <!--  Local CSS copied by "gulp" in gulpfile.js -->
 
-        <link href="/css/material-dashboard.css" rel="stylesheet" type="text/css"   />
+        <link href="/css/manageit-dashboard.css" rel="stylesheet" type="text/css"   />
         <link href="/css/sidebar-menu.css" rel="stylesheet" type="text/css"   />
 
         <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
@@ -142,14 +142,14 @@
                                 <i style="float: right;" id="servers-submenu-caret" class="{{ Route::currentRouteNamed('servers') ? 'fa fa-caret-up' : 'fa fa-caret-down' }}" aria-hidden="true"></i>
                                 <div style="clear: both;"></div>
                             </a>
-                            <ul id="servers-submenu" class="{{ Route::currentRouteNamed('servers') ? 'sub-menu-active' : 'sub-menu' }}">
+                            <ul id="servers-submenu" class="{{ Route::currentRouteNamed('servers') || Route::currentRouteNamed('serverthresholdassignment')? 'sub-menu-active' : 'sub-menu' }}">
                                 <li class="{{ Route::currentRouteNamed('servers') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
                                     <a class="nav-link" href="/servers">
                                         <p>Maintain</p>
                                     </a>
                                 </li>
-                                <li class="nav-sub-item" style="list-style: none;">
-                                    <a class="nav-link" href="/servergroups">
+                                <li class="{{ Route::currentRouteNamed('serverthresholdassignment') ? 'nav-sub-item active' : 'nav-sub-item' }}" style="list-style: none;">
+                                    <a class="nav-link" href="/serverthresholdassignment">
                                         <p>Assign Thresholds</p>
                                     </a>
                                 </li>

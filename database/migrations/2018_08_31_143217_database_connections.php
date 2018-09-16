@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DatabaseCconnections extends Migration
+class DatabaseConnections extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,7 @@ class DatabaseCconnections extends Migration
         Schema::create('database_connections', function (Blueprint $table) {
             $table->collation = 'utf8_general_ci';
             $table->charset = 'utf8';
-            $table->integer('server_group_id')->unsigned();
+            $table->bigInteger('server_group_id')->unsigned();
             $table->string('username', 60);
             $table->binary('password');
             $table->integer('port')->unsigned();

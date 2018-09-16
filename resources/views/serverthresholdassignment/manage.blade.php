@@ -24,30 +24,29 @@
 @endif
 <div class="container">
     <div class="row justify-content-center">
-        <div>
-            <div class="card" style="width: 654px;">
-                <div class="card-header">Change Server</div>
+
+        <div class="card" style="width: 725px;">
+                <div class="card-header">Add Server</div>
 
                 <div class="card-body">
-                {{ Form::open(array('url' => 'servers/update')) }}
-                        <input type="hidden" id="server_id" name="server_id" value="{{ $server->server_id }}" />
-                        <table style="width: 619px;">
+                {{ Form::open(array('url' => 'servers/insert')) }}
+                <table>
                             <tr>
                                 <td style="vertical-align: top;">
                                     <div>
                                         <label for="server_name">Name</label>
-                                        <input id="server_name" name="server_name" type="text" class="form-control" style="width: 400px;" value="{{ $server->server_name }}" />
+                                        <input id="server_name" name="server_name" type="text" class="form-control" style="width: 400px;" value="" />
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <label for="server_type">Type</label>
                                         <select id="server_type" name="server_type" class="form-control " style="width: 146px;">
-                                                <option value="Application Server"  @if ($server->server_type == "Application Server") selected="selected" @endif>Application Server</option>
-                                                <option value="Database Server"  @if ($server->server_type == "Database Server") selected="selected" @endif>Database Server</option>
+                                                <option value="Application Server">Application Server</option>
+                                                <option value="Database Server">Database Server</option>
                                         </select>
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <label for="hostname">Hostname</label>
-                                        <input id="hostname" name="hostname" type="text" class="form-control" style="width: 400px;" value="{{ $server->hostname }}" />
+                                        <input id="hostname" name="hostname" type="text" class="form-control" style="width: 400px;" value="" />
                                     </div>
                                 </td>
                                 <td style="vertical-align: top;padding-left: 100px;">
@@ -57,7 +56,7 @@
                                             <?php
 foreach ($groups as $group) {
     ?>
-                                                <option value="{{ $group->server_group_id }}"  @if ($server->server_group_id == $group->server_group_id) selected="selected" @endif>{{ $group->server_group_name }}</option>
+                                                <option value="{{ $group->server_group_id }}">{{ $group->server_group_name }}</option>
                                             <?php
 }
 ?>
@@ -66,38 +65,26 @@ foreach ($groups as $group) {
                                     <div style="margin-top: 20px;">
                                         <label for="environment">Environment</label>
                                         <select id="environment" name="environment" class="form-control ">
-                                                <option value="Development" @if ($server->environment == "Development") selected="selected" @endif>Development</option>
-                                                <option value="QA"  @if ($server->environment == "QA") selected="selected" @endif>QA</option>
-                                                <option value="Staging"  @if ($server->environment == "Staging") selected="selected" @endif>Staging</option>
-                                                <option value="Production"  @if ($server->environment == "Production") selected="selected" @endif>Production</option>
+                                                <option value="Development">Development</option>
+                                                <option value="QA">QA</option>
+                                                <option value="Staging">Staging</option>
+                                                <option value="Production">Production</option>
                                         </select>
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <label for="status">Status</label>
                                         <select id="status" name="status" class="form-control ">
-                                                <option value="Not Monitored" @if ($server->status == "Not Monitored") selected="selected" @endif>Not Monitored</option>
-                                                <option value="Monitored" @if ($server->status == "Monitored") selected="selected" @endif>Monitored</option>
-                                                <option value="Maintenance" @if ($server->status == "Maintenance") selected="selected" @endif>Maintenance</option>
+                                                <option value="Not Monitored">Not Monitored</option>
+                                                <option value="Monitored">Monitored</option>
+                                                <option value="Maintenance">Maintenance</option>
                                         </select>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan=2 style="padding-top: 20px;padding-bottom: 20px;"><label>Profiles:</label>
-                                    <table>
-                                    @foreach ($profiles as $profile)
-                                        <tr>
-                                            <td><input type="checkbox" /></td>
-                                            <td>{{ $profile->profile_name }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </table>
-                                </td>
-                            </tr>
                         </table>
-                        <div class="form-group" style="width: 161px;margin:auto;margin-top: 20px;">
-                            <button id="changebtn" name="changebtn" type="submit" class="btn btn-primary">Change</button>
-                            <button id="cancelbtn" name="cancelbtn" type="submit" class="btn btn-info">Cancel</button>
+                        <div class="form-group" style="width: 145px;margin:auto;margin-top: 20px;">
+                            <button id="addbtn" name="addbtn" type="submit" class="btn btn-primary">Add</button>
+                            <button id="donebtn" name="donebtn" type="submit" class="btn btn-info">Done</button>
                         </div>
                         {{ Form::close() }}
                 </div>
@@ -105,6 +92,6 @@ foreach ($groups as $group) {
                 </div>
             </div>
         </div>
-    </div>
+
 </div>
 @endsection

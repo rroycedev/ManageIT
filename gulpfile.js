@@ -1,6 +1,14 @@
 'use strict';
 
+var gulp = require('gulp');
+/*
+gulp.task('default',  function () {
+        console.log("Default function called");
+});
+*/
 var elixir = require('laravel-elixir');
+
+// gulp.task( 'default',  [ 'elixir' ] );
 
 elixir(function (mix) {
         mix.copy('resources/assets/img/sidebar-4.jpg', 'public/images');
@@ -14,6 +22,8 @@ elixir(function (mix) {
         mix.copy('resources/assets/img/apple-icon.png', 'public/images');
         mix.copy('resources/assets/css/material-dashboard.css', 'public/css');
         mix.copy('resources/assets/css/sidebar-menu.css', 'public/css');
+    	mix.copy('resources/assets/css/manageit-dashboard.css', 'public/css');
+
 });
 
-// gulp.task( 'default', [ 'elixir' ] );
+

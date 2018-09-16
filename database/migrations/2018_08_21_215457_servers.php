@@ -17,18 +17,20 @@ class Servers extends Migration
         Schema::create('servers', function (Blueprint $table) {
             $table->collation = 'utf8_general_ci';
             $table->charset = 'utf8';
-            $table->increments('server_id');
+            $table->bigIncrements('server_id')->unsigned();
             $table->string('server_name', 60);
+            $table->enum('server_type', array('Application Server', 'Database Server'));
+            $table->enum('environment', array('Development', 'QA', 'Staging', 'Production'));
             $table->string('hostname', 60);
-            $table->integer('port')->unsigned();
-            $table->integer('server_group_id')->unsigned();
+            $table->bigInteger('server_group_id')->unsigned();
+            $table->enum('status', array('Not Monitored', 'Monitored', 'Maintenance'));
+            $table->foreign('server_group_id')->references('server_group_id')->on('server_groups')->onDelete('cascade');
             $table->unique([
                 'server_name',
             ], 'unq_server_name');
             $table->unique([
                 'hostname',
-                'port',
-            ], 'unq_hostname_port');
+            ], 'unq_hostname');
         });
 
     }
